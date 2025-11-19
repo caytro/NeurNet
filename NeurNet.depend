@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1763584686 source:/home/sylvain/Projects/NeurNet/main.cpp
+	<iostream>
+	"Perceptron.hpp"
+
+1763582669 source:/home/sylvain/Projects/NeurNet/src/Perceptron.cpp
+	"Perceptron.hpp"
+	"Dendrite.hpp"
+
+1763586519 /home/sylvain/Projects/NeurNet/include/Perceptron.hpp
+	<vector>
+	<memory>
+	"Dendrite.hpp"
+
+1763584828 /home/sylvain/Projects/NeurNet/include/Dendrite.hpp
+
+1763585636 source:/home/sylvain/Projects/NeurNet/src/Dendrite.cpp
+	"Dendrite.hpp"
+	"Perceptron.hpp"
+	<stdlib.h>
+
