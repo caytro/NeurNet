@@ -1,28 +1,15 @@
-#ifndef DENDRITE_H
-#define DENDRITE_H
+#pragma once
 
 class Perceptron;
 
-class Dendrite
-{
-    public:
-        Dendrite();
-        Dendrite(Perceptron* source, Perceptron* cible, double weight);
-        virtual ~Dendrite();
+class Dendrite {
+public:
+    Dendrite(Perceptron& source, double weight);
 
-        double getWeight();
-        void setWeight(double val);
-        Perceptron* getSource();
-        void setSource(Perceptron *source);
-        Perceptron* getBody();
-        void setBody(Perceptron *body);
+    Perceptron& getSource() const;
+    double getWeight() const;
 
-    protected:
-
-    private:
-        double m_weight;
-        Perceptron *m_source;
-        Perceptron *m_body;
+private:
+    Perceptron& m_source;
+    double m_weight;
 };
-
-#endif // DENDRITE_H

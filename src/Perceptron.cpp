@@ -1,51 +1,38 @@
 #include "Perceptron.hpp"
-#include "Dendrite.hpp"
+#include <numeric>
 
-using namespace std;
+Perceptron::Perceptron(double bias)
+    : m_bias(bias)
+{}
 
-Perceptron::Perceptron():m_dendrites(),m_value(0), m_biais(0)
-{
-
+void Perceptron::addInput(Perceptron& input, double weight) {
+    m_dendrites.emplace_back(input, weight);
 }
 
-Perceptron::~Perceptron()
-{
-
+double Perceptron::calcInput() const {
+    return std::transform_reduce(
+        m_dendrites.begin(),
+        m_dendrites.end(),
+        m_bias,                         // valeur initiale = biais
+        std::plus<>(),                  // opération de réduction
+        [](const Dendrite& d) {         // transformation
+            return d.getSource().getOutput() * d.getWeight();
+        }
+    );
 }
 
-void Perceptron::connectSource(Perceptron *source, double weight)
-{
-    m_dendrites.push_back(std::make_unique<Dendrite>(source, this, weight));
-}
-double Perceptron::calcOutput()
-{
-    return 0;
+double Perceptron::getOutput() const {
+    return m_output;
 }
 
-double Perceptron::getVal()
-{
-    return m_value;
-}
-void Perceptron::setVal(double value)
-{
-    m_value = value;
+void Perceptron::setOutput(double output) {
+    m_output = output;
 }
 
-void Perceptron::setBiais(double biais)
-{
-    m_biais = biais;
+void Perceptron::compute() {
+    m_output = activation(calcInput());
 }
 
-double Perceptron::getBiais()
-{
-    return m_biais;
+double Perceptron::activation(double x) const {
+    return x > 0 ? 1.0 : 0.0;
 }
-
-vector<unique_ptr<Dendrite>> *Perceptron::getDendrites()
-{
-    return &m_dendrites;
-}
-
-
-
-

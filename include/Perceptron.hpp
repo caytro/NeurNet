@@ -1,30 +1,23 @@
-#ifndef PERCEPTRON_H
-#define PERCEPTRON_H
+#pragma once
 
 #include <vector>
-#include <memory>
 #include "Dendrite.hpp"
 
-class Perceptron
-{
-    public:
-        Perceptron();
-        virtual ~Perceptron();
-        void connectSource(Perceptron *source, double weight);
-        double calcOutput();
-        void setVal(double val);
-        double getVal();
-        void setBiais(double biais);
-        double getBiais();
-        std::vector<std::unique_ptr<Dendrite>> *getDendrites();
+class Perceptron {
+public:
+    explicit Perceptron(double bias = 0.0);
 
-    protected:
+    void addInput(Perceptron& input, double weight);
+    double calcInput() const;
+    double getOutput() const;
+    void setOutput(double output); // Pour les neurones de la couche dentrée
+    void compute();
 
-    private:
-        std::vector<std::unique_ptr<Dendrite>> m_dendrites;
-        double m_value; /* Pour les neurones d'entrée. Si as de dendrite alors calcOutput retourne m_value */
-        double m_biais;
+private:
+    double activation(double x) const;
 
+private:
+    double m_bias;
+    double m_output = 0.0;
+    std::vector<Dendrite> m_dendrites;
 };
-
-#endif // PERCEPTRON_H
