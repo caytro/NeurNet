@@ -8,6 +8,7 @@ public:
 
     Perceptron& getSource() const;
     double getWeight() const;
+    void setWeight(double weight);
 
 private:
     Perceptron& m_source;

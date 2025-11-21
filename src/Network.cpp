@@ -2,9 +2,3 @@
 
 
 
-
-Perceptron& Network::addNeuron()
-{
-
-}
-

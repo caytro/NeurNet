@@ -1,21 +1,22 @@
 #include <iostream>
-#include "Network.hpp"
+#include "Perceptron.hpp"
 
 using namespace std;
 
 int main()
 {
-Network net;
 
 Perceptron input1;
 Perceptron input2;
-Perceptron neuron(0.8); // neurone avec biais
+Perceptron neuron(0); // neurone avec biais
 
-neuron.addInput(input1,3);
-neuron.addInput(input2,-1);
+neuron.addInput(input1,0.3);
+neuron.addInput(input2,0.29);
 
-input1.setOutput(3);
-input2.setOutput(-2);
+input1.setOutput(1);
+input2.setOutput(-1);
 
-cout << "neuron.output : " << neuron.calcInput();
+neuron.compute();
+
+cout << "neuron.output : " << neuron.getOutput();
 }

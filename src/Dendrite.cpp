@@ -12,3 +12,7 @@ Perceptron& Dendrite::getSource() const {
 double Dendrite::getWeight() const {
     return m_weight;
 }
+
+void Dendrite::setWeight(double weight){
+    m_weight = weight;
+}

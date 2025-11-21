@@ -9,10 +9,9 @@ class Network {
 public:
     Network() = default;
 
-    Perceptron& addNeuron();
-    Perceptron& addNeuron(double biais);
+
 
 
 private:
-    std::vector<Perceptron> m_layers;
+    std::vector<Perceptron> m_neurons;
 };
