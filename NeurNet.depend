@@ -1,7 +1,10 @@
 # depslib dependency file v1.0
-1763758687 source:/home/sylvain/Projects/NeurNet/main.cpp
+1763913705 source:/home/sylvain/Projects/NeurNet/main.cpp
 	<iostream>
+	<vector>
+	<algorithm>
 	"Perceptron.hpp"
+	"DataSet.hpp"
 
 1763759499 source:/home/sylvain/Projects/NeurNet/src/Perceptron.cpp
 	"Perceptron.hpp"
@@ -26,18 +29,20 @@
 	<vector>
 	"Perceptron.hpp"
 
-1763759041 /home/sylvain/Projects/NeurNet/include/DataSet.hpp
+1763913336 /home/sylvain/Projects/NeurNet/include/DataSet.hpp
 	<DataSample.hpp>
 	<vector>
 
-1763759032 /home/sylvain/Projects/NeurNet/include/DataSample.hpp
+1763909731 /home/sylvain/Projects/NeurNet/include/DataSample.hpp
 	<vector>
 
-1763758962 source:/home/sylvain/Projects/NeurNet/src/DataSample.cpp
+1763909816 source:/home/sylvain/Projects/NeurNet/src/DataSample.cpp
 	"DataSample.hpp"
 	<vector>
 
-1763758900 source:/home/sylvain/Projects/NeurNet/src/DataSet.cpp
+1763913329 source:/home/sylvain/Projects/NeurNet/src/DataSet.cpp
 	"DataSet.hpp"
 	<vector>
+	<cmath>
+	<random>
 

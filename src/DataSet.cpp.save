@@ -23,7 +23,7 @@ size_t DataSet::getInputDimension() const
 {
     return m_inputDimension;
 }
-void DataSet::addSample(vector<double>& input, double output)
+void DataSet::addDataSample(vector<double>& input, double output)
 {
     m_samples.emplace_back(input, output);
 }

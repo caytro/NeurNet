@@ -9,15 +9,11 @@ class DataSet
 {
     public:
         DataSet();
-        explicit DataSet(size_t inputDimension);
+        
         void setInputDimension(size_t inputDimension);
         size_t getInputDimension() const;
-        void addSample(std::vector<double>& input, double output);
+        void addDataSample(std::vector<double>& input, double output);
         const std::vector<DataSample>& getSamples() const;
-        void genereDiscDataset(size_t nSamples,
-                           double xc, double yc,
-                           double radius,
-                           double output);
 
     protected:
 

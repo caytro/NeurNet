@@ -7,7 +7,7 @@ class DataSample
 {
     public:
         DataSample();
-        DataSample(std::vector<double>&input, double output);
+        DataSample(std:vector<double>&input, double output);
         void setInput(std::vector<double>& input);
         const std::vector<double>& getInput() const;
         void setOutput(double output);

@@ -14,7 +14,7 @@ size_t nbSamples = 20;
 DataSet dataset1(inputDimension);
 
 dataset1.genereDiscDataset(nbSamples / 2,-5, 5, 2, 1);
-dataset1.genereDiscDataset(nbSamples / 2, 1,3,2,0);
+dataset1.genereDiscDataset(nbSamples / 2, 1,3,)
 
 for_each(dataset1.getSamples().begin(), dataset1.getSamples().end(), [](const DataSample &ds)
     {
