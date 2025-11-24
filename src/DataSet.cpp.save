@@ -5,27 +5,39 @@
 
 using namespace std;
 
-DataSet::DataSet():m_inputDimension(0), m_samples(0)
-{
 
-}
+// Constructors 
+DataSet::DataSet():m_inputDimension(0), m_samples(0)
+{}
 
 DataSet::DataSet(size_t inputDimension): m_inputDimension(inputDimension), m_samples(0)
-{
+{}
 
+DataSet::DataSet(Perceptron &perceptron)
+{
+    vector<Dendrite> dendrites = perceptron.getDendrites();
+    m_inputDimension = size(dendrites);
+    
 }
+
+// Setters
 
 void DataSet::setInputDimension(size_t inputDimension)
 {
     m_inputDimension = inputDimension;
 }
+
+void DataSet::addSample(vector<double>& input, double output)
+{
+    m_samples.emplace_back(input, output);
+}
+
+
+// Getters
+
 size_t DataSet::getInputDimension() const
 {
     return m_inputDimension;
-}
-void DataSet::addDataSample(vector<double>& input, double output)
-{
-    m_samples.emplace_back(input, output);
 }
 
 const vector<DataSample>& DataSet::getSamples() const
@@ -33,6 +45,7 @@ const vector<DataSample>& DataSet::getSamples() const
     return m_samples;
 }
 
+// Oth
 void DataSet::genereDiscDataset(size_t nSamples,
                                 double xc, double yc,
                                 double radius,

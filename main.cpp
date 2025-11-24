@@ -25,17 +25,14 @@ for_each(dataset1.getSamples().begin(), dataset1.getSamples().end(), [](const Da
 
     });
 
-Perceptron input1;
-Perceptron input2;
-Perceptron neuron(0); // neurone avec biais
+Perceptron neuron(0); // neurone avec biais null
+Perceptron input1, input2;
+neuron.addInput(input1, 12);
+neuron.addInput(input2, -15);
 
-neuron.addInput(input1,0.3);
-neuron.addInput(input2,0.29);
+vector<double> input(2,2);
+DataSample datasample(input, 0);
+neuron.compute(datasample);
 
-input1.setOutput(1);
-input2.setOutput(-1);
-
-neuron.compute();
-
-cout << "neuron.output : " << neuron.getOutput();
+cout << "neuron.output : " << neuron.getOutput() << endl;
 }

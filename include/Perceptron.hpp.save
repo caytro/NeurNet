@@ -13,7 +13,7 @@ public:
 
 
     // Getters
-    double getOutput() const;
+    const std::vector<double>& getOutput() const;
     const std::vector<Dendrite>& getDendrites() const;
 
 
@@ -21,12 +21,12 @@ public:
 
     const double calcInput(const DataSample &datasample) const;
 
-    double activation(double z);
+
     void compute(const DataSample& datasample);
     double calcLogLoss(const DataSet &dataSet) const;
     double calcGradient(const DataSet &dataSet) const;
     void stepGradientDescent(DataSet &dataSet);
-
+    const std::vector<double> activation(std::vector<double> &z) const;
 
 private:
     double m_biais;

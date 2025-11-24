@@ -9,16 +9,22 @@ class DataSet
 {
     public:
         DataSet();
-        
+        explicit DataSet(size_t inputDimension);
+        explicit Data
         void setInputDimension(size_t inputDimension);
         size_t getInputDimension() const;
-        void addDataSample(std::vector<double>& input, double output);
+        void addSample(std::vector<double>& input, double output);
         const std::vector<DataSample>& getSamples() const;
+        void genereDiscDataset(size_t nSamples,
+                           double xc, double yc,
+                           double radius,
+                           double output);
+        void genereFromPerceptronOutput(const Percetron &perceptron)
 
     protected:
 
     private:
-        size_t m_inputDimension;
+        size_t m_inputDimension; // Utile ?
         std::vector<DataSample> m_samples;
 };
 

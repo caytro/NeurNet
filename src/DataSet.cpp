@@ -5,33 +5,41 @@
 
 using namespace std;
 
-DataSet::DataSet():m_inputDimension(0), m_samples(0)
-{
 
-}
+// Constructors
+DataSet::DataSet():m_inputDimension(0), m_samples(0)
+{}
 
 DataSet::DataSet(size_t inputDimension): m_inputDimension(inputDimension), m_samples(0)
-{
+{}
 
-}
+
+// Setters
 
 void DataSet::setInputDimension(size_t inputDimension)
 {
     m_inputDimension = inputDimension;
 }
-size_t DataSet::getInputDimension() const
-{
-    return m_inputDimension;
-}
+
 void DataSet::addSample(vector<double>& input, double output)
 {
     m_samples.emplace_back(input, output);
+}
+
+
+// Getters
+
+size_t DataSet::getInputDimension() const
+{
+    return m_inputDimension;
 }
 
 const vector<DataSample>& DataSet::getSamples() const
 {
     return m_samples;
 }
+
+// Others
 
 void DataSet::genereDiscDataset(size_t nSamples,
                                 double xc, double yc,

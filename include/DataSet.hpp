@@ -22,7 +22,7 @@ class DataSet
     protected:
 
     private:
-        size_t m_inputDimension;
+        size_t m_inputDimension; // Utile ?
         std::vector<DataSample> m_samples;
 };
 
