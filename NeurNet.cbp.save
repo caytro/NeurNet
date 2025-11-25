@@ -32,17 +32,20 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++20" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/DataSample.hpp" />
 		<Unit filename="include/DataSet.hpp" />
 		<Unit filename="include/Dendrite.hpp" />
+		<Unit filename="include/Graphics.hpp" />
 		<Unit filename="include/Network.hpp" />
 		<Unit filename="include/Perceptron.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/DataSample.cpp" />
 		<Unit filename="src/DataSet.cpp" />
 		<Unit filename="src/Dendrite.cpp" />
+		<Unit filename="src/Graphics.cpp" />
 		<Unit filename="src/Network.cpp" />
 		<Unit filename="src/Perceptron.cpp" />
 		<Extensions />

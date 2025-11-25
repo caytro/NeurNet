@@ -11,7 +11,6 @@ DataSample::DataSample():m_input(0),m_output(0)
 
 DataSample::DataSample(vector<double>&input, double output): m_input(input), m_output(output)
 {
-
 }
 
 void DataSample::setInput(vector<double>& input)
@@ -20,6 +19,11 @@ void DataSample::setInput(vector<double>& input)
 }
 
 const vector<double>& DataSample::getInput() const
+{
+    return m_input;
+}
+
+vector<double>& DataSample::getInput()
 {
     return m_input;
 }

@@ -10,6 +10,7 @@ class DataSample
         DataSample(std::vector<double>&input, double output);
         void setInput(std::vector<double>& input);
         const std::vector<double>& getInput() const;
+        std::vector<double>& getInput(); // mutable
         void setOutput(double output);
         double getOutput() const;
 
