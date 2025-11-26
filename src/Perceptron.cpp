@@ -48,26 +48,102 @@ const double Perceptron::calcInput(const DataSample &datasample) const
 
 
 
-void Perceptron::compute(const DataSample& datasample) {
-    if (size(m_dendrites) > 0) // Sinon c'est un neurone d'entrée, il ne faut pas modifier m_output
-    {
-        double z = calcInput(datasample);
-        m_output = activation(z);
-    }
+double Perceptron::compute(const DataSample& datasample) const
+{
+// TODO (sylvain#1#11/26/25): Implémenter une class Layer et une classe Network pour gérer les neurones d'entrée de façon plus fluide
+
+    assert(m_dendrites.size() > 0);
+    return activation(calcInput(datasample));
 }
 
-double Perceptron::activation(double z) {
+double Perceptron::activation(double z) const
+{
     return 1/(1 + exp(-z));
 }
 
 double Perceptron::calcLogLoss(const DataSet &dataSet) const
 {
-    return 0;
+    assert(dataSet.getSamples().size() > 0);
+    const auto& samples = dataSet.getSamples();
+
+    double logLoss = transform_reduce(
+        samples.begin(), samples.end(),
+        0.0,
+        plus<>(),
+        [this](const DataSample &dataSample)
+        {
+            double a = compute(dataSample);  // on récupère directement le résultat
+            a = clamp(a, 1e-15, 1.0 - 1e-15);       // éviter log(0)
+
+            double y = dataSample.getOutput();
+            return y * log(a) + (1 - y) * log(1 - a);
+        }
+    );
+
+    return -1 / dataSet.getSamples().size() * logLoss;
 }
 
-double Perceptron::calcGradient(const DataSet &dataSet) const
+
+vector<double> Perceptron::calcGradientW(const DataSet &dataSet) const
 {
-    return 0;
+    assert(m_dendrites.size() == dataSet.getDimension());
+    assert(dataSet.getSamples().size() > 0);
+    const auto& samples = dataSet.getSamples();
+
+    double delta = transform_reduce(
+        samples.begin(), samples.end(),
+        0.0,
+        plus<>(),
+        [this](const DataSample &dataSample)
+        {
+            double a = compute(dataSample);  // on récupère directement le résultat
+            a = clamp(a, 1e-15, 1.0 - 1e-15);       // éviter log(0)
+
+            double y = dataSample.getOutput();
+            return a - y;
+        }
+    );
+    vector<double> result(dataSet.getDimension(), 0.0);
+
+    for (const auto& s : samples)
+    {
+        const vector<double>& v = s.getInput();
+        transform(
+            result.begin(), result.end(),
+            v.begin(),
+            result.begin(),
+            plus<>());
+    }
+    double k = delta / dataSet.getDimension();
+    // une seule passe pour multiplier
+    transform(
+        result.begin(), result.end(),
+        result.begin(),
+        [k](double x){ return x * k; });
+
+    return result;
+}
+
+double Perceptron::calcGradientBiais(const DataSet &dataSet) const
+{
+    assert(m_dendrites.size() == dataSet.getDimension());
+    assert(dataSet.getSamples().size() > 0);
+    const auto& samples = dataSet.getSamples();
+
+    double delta = transform_reduce(
+        samples.begin(), samples.end(),
+        0.0,
+        plus<>(),
+        [this](const DataSample &dataSample)
+        {
+            double a = compute(dataSample);  // on récupère directement le résultat
+            a = clamp(a, 1e-15, 1.0 - 1e-15);       // éviter log(0)
+
+            double y = dataSample.getOutput();
+            return a - y;
+        }
+    );
+    return delta / dataSet.getDimension();
 }
 
 

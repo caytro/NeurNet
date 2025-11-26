@@ -21,10 +21,15 @@ public:
 
     const double calcInput(const DataSample &datasample) const;
 
-    double activation(double z);
-    void compute(const DataSample& datasample);
+    double activation(double z) const;
+    double compute(const DataSample& datasample) const;
+
     double calcLogLoss(const DataSet &dataSet) const;
-    double calcGradient(const DataSet &dataSet) const;
+    std::vector<double> calcGradientW(const DataSet &dataSet) const;
+
+// TODO (sylvain#1#11/26/25): Create class Gradient
+
+    double calcGradientBiais(const DataSet &dataSet) const;
     void stepGradientDescent(DataSet &dataSet);
 
 

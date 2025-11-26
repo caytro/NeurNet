@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <ranges>
 #include <limits>
+#include <cassert>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ void DataSet::setDimension(size_t dimension)
 
 void DataSet::addSample(vector<double>& input, double output)
 {
+    assert(input.size() == m_dimension);
     m_samples.emplace_back(input, output);
 }
 

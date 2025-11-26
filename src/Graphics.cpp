@@ -50,7 +50,7 @@ void Graphics::displayDataSet(const DataSet& dataSet) const
         sf::CircleShape point (2);
         DataSample sample = samples.at(i);
         point.setPosition((sample.getInput().at(0) * scale + xOffset) , (sample.getInput().at(1) * scale + yOffset ));
-        point.setFillColor(sf::Color::Red);
+        point.setFillColor(sample.getOutput() == 0 ? sf::Color::Red : sf::Color::Blue);
         points.push_back(point);
     }
 

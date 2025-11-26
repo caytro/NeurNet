@@ -26,6 +26,7 @@ void DataSet::setDimension(size_t dimension)
 
 void DataSet::addSample(vector<double>& input, double output)
 {
+    assert(input.size() == m_)
     m_samples.emplace_back(input, output);
 }
 
@@ -94,7 +95,7 @@ void DataSet::computeFeatureMinMax()
     }
 }
 
-void DataSet::normalizeSample(DataSample& s) const {
+void DataSet::normalizeSample(DataSample& s)  {
     auto& vec = s.getInput();
     for (size_t i = 0; i < vec.size(); ++i) {
         double denom = m_maxs[i] - m_mins[i];
