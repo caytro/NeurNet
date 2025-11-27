@@ -36,7 +36,5 @@ int main()
 
     vector<double> input(2,2);
     DataSample datasample(input, 0);
-    neuron.compute(datasample);
 
-    cout << "neuron.output : " << neuron.getOutput() << endl;
 }
