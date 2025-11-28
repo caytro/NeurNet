@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
+#include <numeric>
 
 using namespace std;
 
@@ -18,6 +19,8 @@ Perceptron::Perceptron(double biais): m_biais(biais)
 // Setters
 
 void Perceptron::addInput(Perceptron& input, double weight) {
+void Perceptron::addInput(Perceptron& input, double weight)
+{
     m_dendrites.emplace_back(input, weight);
 }
 
@@ -39,9 +42,34 @@ double Perceptron::getLearningRate() const
     return m_learningRate;
 }
 
+vector<double>& Perceptron::getZ() // S(Wk . Xk) + b  , size  = DataSet.samples.size() = Un par échantillons
+{
+    return m_z;
+}
+
+vector<double>& Perceptron::getA()  // a(Z) ,  size(A) = size(Z)
+{
+    return m_a;
+}
+
+vector<double>& Perceptron::getE()  // A - Y , size(E) = size(A)
+{
+    return m_e;
+}
+
+vector<double>& Perceptron::getGradientW()  // S(ek . Xk) , Somme sur les échantillons, size == m_dendrites.size()
+{
+    return m_gradient;
+}
+
 
 
 // Others
+
+double Perceptron::activationFunction(double z) const
+{
+    return 1/(1 + exp(-z));
+}
 
 vector<double> Perceptron::getWVector() const {
     vector<double> w;
@@ -73,18 +101,56 @@ void Perceptron::calcZ(const DataSet &dataSet)
 }
 
 
-
-
-double Perceptron::activationFunction(double z) const
+double Perceptron::calcLogLoss(const DataSet& dataSet) const
 {
-    return 1/(1 + exp(-z));
+    const auto& samples = dataSet.getSamples();
+    const auto& w = getWVector();
+
+    vector<double> m_z(samples.size());
+
+    transform(samples.begin(), samples.end(),
+                   m_z.begin(),
+                   [&](const DataSample& s) {
+                       const auto& x = s.getInput();
+                       return inner_product(x.begin(), x.end(),
+                                                 w.begin(),m_biais);
+                   });
 }
+
+void Perceptron::calcA()
+{
+    vector<double> m_a(m_z.size());
+    transform(
+        m_z.begin(),
+        m_z.end(),
+        m_a.begin(),
+        [this](const auto& z)
+        {
+            return activationFunction(z);
+        }
+    );
+}
+
 
 double Perceptron::calcLogLoss(const DataSet& dataSet) const
 {
-
-
-    return 0;
+    assert(dataSet.getSamples().size() > 0);
+    const vector<DataSample>& samples = dataSet.getSamples();
+    double logLoss = transform_reduce(
+        samples.begin(),
+        samples.end(),
+        m_a.begin(),
+        0.0,
+        plus<double>(),
+        [](const DataSample& s, double a)
+        {
+            a = clamp(a, 1e-15, 1 - 1e-15);
+            double y = s.getOutput();
+            return y * log(a) + (1 - y) * log(1 - a);
+        }
+    );
+    logLoss *= - 1 / dataSet.getSamples().size();
+    return logLoss;
 }
 
 

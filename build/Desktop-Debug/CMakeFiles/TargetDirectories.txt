@@ -1,0 +1,3 @@
+/home/sylvain/Projects/NeurNet1/build/Desktop-Debug/CMakeFiles/MonProjet.dir
+/home/sylvain/Projects/NeurNet1/build/Desktop-Debug/CMakeFiles/edit_cache.dir
+/home/sylvain/Projects/NeurNet1/build/Desktop-Debug/CMakeFiles/rebuild_cache.dir
