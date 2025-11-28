@@ -13,12 +13,13 @@ using namespace std;
 
 // Constructor
 
+
+
 Perceptron::Perceptron(double biais): m_biais(biais)
 {}
 
 // Setters
 
-void Perceptron::addInput(Perceptron& input, double weight) {
 void Perceptron::addInput(Perceptron& input, double weight)
 {
     m_dendrites.emplace_back(input, weight);
@@ -84,25 +85,6 @@ vector<double> Perceptron::getWVector() const {
 void Perceptron::calcZ(const DataSet &dataSet)
 {
     assert(dataSet.getDimension() == m_dendrites.size());
-    m_z.assign(dataSet.getSamples().size(), m_biais);
-    const auto& samples = dataSet.getSamples();
-    const auto& w = getWVector();
-
-    vector<double> result(samples.size());
-
-    transform(samples.begin(), samples.end(),
-                   result.begin(),
-                   [&](const DataSample& s) {
-                       const auto& x = s.getInput();
-                       return inner_product(x.begin(), x.end(),
-                                                 w.begin(), m_biais);
-                   });
-
-}
-
-
-double Perceptron::calcLogLoss(const DataSet& dataSet) const
-{
     const auto& samples = dataSet.getSamples();
     const auto& w = getWVector();
 
@@ -132,6 +114,7 @@ void Perceptron::calcA()
 }
 
 
+
 double Perceptron::calcLogLoss(const DataSet& dataSet) const
 {
     assert(dataSet.getSamples().size() > 0);
@@ -151,6 +134,7 @@ double Perceptron::calcLogLoss(const DataSet& dataSet) const
     );
     logLoss *= - 1 / dataSet.getSamples().size();
     return logLoss;
+
 }
 
 

@@ -1,6 +1,43 @@
-/build/
-/CMakeFiles/
+# ------------------------
+# Build directories
+# ------------------------
+build/
+cmake-build-*/
+
+# ------------------------
+# QtCreator files
+# ------------------------
+*.user
+*.user.*.xml
+*.pro.user
+*.pro.user.*
+*.autosave
+*.qbs.user
+
+# ------------------------
+# CMake files
+# ------------------------
+CMakeFiles/
 CMakeCache.txt
-*.a
-*.so
+cmake_install.cmake
+Makefile
+*.cbp
+*.depend
+*.layout
+*.log
+
+# ------------------------
+# SFML / binaries
+# ------------------------
+*.exe
+*.out
 *.o
+*.obj
+
+# ------------------------
+# IDE / OS specific
+# ------------------------
+*.swp
+*~
+.DS_Store
+
