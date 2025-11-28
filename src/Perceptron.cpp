@@ -113,6 +113,22 @@ void Perceptron::calcA()
     );
 }
 
+void Perceptron::calcE(const DataSet& dataSet )
+{
+    assert(dataSet.getSamples().size() == m_a.size());
+    vector<double> m_e(m_a.size());
+    auto& samples = dataSet.getSamples();
+    transform(
+        samples.begin(),
+        samples.end(),
+        m_a.begin(),
+        m_e.begin(),
+        [&](auto& s, double a)
+        {
+            return a - s.getOutput();
+        });
+}
+
 
 
 double Perceptron::calcLogLoss(const DataSet& dataSet) const
@@ -138,8 +154,22 @@ double Perceptron::calcLogLoss(const DataSet& dataSet) const
 }
 
 
-
-
+void Perceptron::calcGradient(const DataSet& dataSet)
+{
+    assert(m_e.size() == dataSet.getSamples().size());
+    size_t k = m_dendrites.size();
+    size_t n = m_e.size();
+    m_gradient = vector<double>(k,0.0);
+    const vector<DataSample>& samples = dataSet.getSamples();
+    for (size_t i = 0; i < n; ++i)
+    {
+        const auto& Xi = samples[i].getInput();   // vecteur de taille K
+        for (size_t j = 0; j < k; ++j)
+        {
+            m_gradient[k] += m_e[i] * Xi[k];
+        }
+    }
+}
 
 vector<double>& Perceptron::getOutput()
 {

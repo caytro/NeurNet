@@ -27,8 +27,8 @@ public:
     void calcZ(const DataSet& dataSet);
     void calcA();
     double calcLogLoss(const DataSet& dataSet) const;
-    void calcE(DataSet& dataSet);
-    void calcGradient(DataSet& dataSet);
+    void calcE(const DataSet& dataSet);
+    void calcGradient(const DataSet& dataSet);
     double activationFunction(double z) const;
 
 
