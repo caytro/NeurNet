@@ -1,6 +1,7 @@
 #include "Perceptron.hpp"
 #include "DataSample.hpp"
 #include "DataSet.hpp"
+#include "Dendrite.hpp"
 
 #include <stdlib.h>
 #include <numeric>
@@ -11,14 +12,16 @@
 
 using namespace std;
 
-// Constructor
-
-
+/*************************************/
+// Constructors
+/************************************/
 
 Perceptron::Perceptron(double biais): m_biais(biais)
 {}
 
+/***************************************/
 // Setters
+/***************************************/
 
 void Perceptron::addInput(Perceptron& input, double weight)
 {
@@ -30,8 +33,9 @@ void Perceptron::setLearningRate(double learningRate)
     m_learningRate = learningRate;
 }
 
+/******************************************/
 // Getters
-
+/*********************************************/
 
 vector<Dendrite>& Perceptron::getDendrites()
 {
@@ -60,12 +64,22 @@ vector<double>& Perceptron::getE()  // A - Y , size(E) = size(A)
 
 vector<double>& Perceptron::getGradientW()  // S(ek . Xk) , Somme sur les échantillons, size == m_dendrites.size()
 {
-    return m_gradient;
+    return m_gradientW;
 }
 
+double Perceptron::getGradientB() const
+{
+    return m_gradientB;
+}
 
+double Perceptron::getBiais() const
+{
+    return m_biais;
+}
 
-// Others
+/*****************************************/
+// Compute
+/*****************************************/
 
 double Perceptron::activationFunction(double z) const
 {
@@ -88,7 +102,7 @@ void Perceptron::calcZ(const DataSet &dataSet)
     const auto& samples = dataSet.getSamples();
     const auto& w = getWVector();
 
-    vector<double> m_z(samples.size());
+    m_z.assign(samples.size(), 0.0);
 
     transform(samples.begin(), samples.end(),
                    m_z.begin(),
@@ -101,7 +115,7 @@ void Perceptron::calcZ(const DataSet &dataSet)
 
 void Perceptron::calcA()
 {
-    vector<double> m_a(m_z.size());
+    m_a.assign(m_z.size(),0.0);
     transform(
         m_z.begin(),
         m_z.end(),
@@ -116,7 +130,7 @@ void Perceptron::calcA()
 void Perceptron::calcE(const DataSet& dataSet )
 {
     assert(dataSet.getSamples().size() == m_a.size());
-    vector<double> m_e(m_a.size());
+    m_e.assign(m_a.size(),0.0);
     auto& samples = dataSet.getSamples();
     transform(
         samples.begin(),
@@ -147,33 +161,42 @@ double Perceptron::calcLogLoss(const DataSet& dataSet) const
             double y = s.getOutput();
             return y * log(a) + (1 - y) * log(1 - a);
         }
-    );
-    logLoss *= - 1 / dataSet.getSamples().size();
+        );
+    logLoss *= - 1.0 / dataSet.getSamples().size();
     return logLoss;
-
 }
 
 
-void Perceptron::calcGradient(const DataSet& dataSet)
+void Perceptron::calcGradientW(const DataSet& dataSet)
 {
     assert(m_e.size() == dataSet.getSamples().size());
     size_t k = m_dendrites.size();
     size_t n = m_e.size();
-    m_gradient = vector<double>(k,0.0);
+    m_gradientW.assign(m_dendrites.size(),0.0);
     const vector<DataSample>& samples = dataSet.getSamples();
     for (size_t i = 0; i < n; ++i)
     {
         const auto& Xi = samples[i].getInput();   // vecteur de taille K
         for (size_t j = 0; j < k; ++j)
         {
-            m_gradient[k] += m_e[i] * Xi[k];
+            m_gradientW[j] += m_e[i] * Xi[j];
         }
     }
 }
 
-vector<double>& Perceptron::getOutput()
+void Perceptron::calcGradientB()
 {
-    return m_a;
+    m_gradientB = accumulate(m_e.begin(), m_e.end(),0.0);
 }
+
+void Perceptron::updateParams()
+{
+    for(size_t i = 0 ; i < m_dendrites.size() ; ++i)
+    {
+        m_dendrites[i].setWeight(m_dendrites[i].getWeight() - m_gradientW[i] * m_learningRate);
+    }
+    m_biais -= m_gradientB * m_learningRate;
+}
+
 
 

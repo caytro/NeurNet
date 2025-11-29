@@ -36,7 +36,7 @@ set(SOURCES
     src/DataSet.cpp
     src/Dendrite.cpp
     src/Perceptron.cpp
-    src/Graphics.cpp
+    src/Graphic.cpp
     src/Network.cpp
 )
 # Trouver SFML

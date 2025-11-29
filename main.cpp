@@ -4,37 +4,68 @@
 
 #include "Perceptron.hpp"
 #include "DataSet.hpp"
-#include "Graphics.hpp"
+#include "Graphic.hpp"
 
 
 using namespace std;
 
 int main()
 {
-    Graphics graphTest;
 
     size_t inputDimension = 2;
-    size_t nbSamples = 50;
+    size_t nbSamples = 200;
     DataSet dataset1(inputDimension);
 
-    dataset1.genereDiscDataset(nbSamples / 2,-2, 2, 1, 1);
-    dataset1.genereDiscDataset(nbSamples / 2, 1,3,1,0);
-    graphTest.displayDataSet(dataset1);
-    for_each(dataset1.getSamples().begin(), dataset1.getSamples().end(), [](const DataSample &ds)
-        {
-            vector<double> input = ds.getInput();
-            cout << "x : " << input.at(0) << "\t";
-            cout << "y : " << input.at(1) << "\t";
-            cout << "output : " << ds.getOutput() << endl;
-
-        });
+    dataset1.genereDiscDataset(nbSamples / 2,  -2,  3, 3, 1);
+    dataset1.genereDiscDataset(nbSamples / 2, -2, -1, 2, 0);
+    dataset1.computeFeatureMinMax();
+    dataset1.normalizeFeatureWise();
 
     Perceptron neuron(0); // neurone avec biais null
     Perceptron input1, input2;
-    neuron.addInput(input1, 12);
-    neuron.addInput(input2, -15);
+    neuron.addInput(input1, 1);
+    neuron.addInput(input2, 1);
+    neuron.setLearningRate(0.00001);
 
-    vector<double> input(2,2);
-    DataSample datasample(input, 0);
+    Graphic graphic(dataset1, neuron);
+
+    int maxIter = 200000;
+    for(int i=0; i < maxIter ; ++i)
+    {
+        neuron.calcZ(dataset1);
+        neuron.calcA();
+        neuron.calcE(dataset1);
+        double logLoss = neuron.calcLogLoss(dataset1);
+        neuron.calcGradientW(dataset1);
+        neuron.calcGradientB();
+        neuron.updateParams();
+        if ( i % 100 == 0 )
+        {
+            cout << endl << "*****************" << endl << endl;
+            cout << "Itération : " << i << endl;
+            cout << "Logloss : " << logLoss << endl;
+            graphic.updateDecisionBoundary();
+            graphic.render();
+        }
+
+
+    }
+    // ------------------------------------------
+    // Attendre une touche avant de fermer
+    // ------------------------------------------
+    sf::Event event;
+    while (graphic.isOpen()) {
+        while (graphic.getWindow().pollEvent(event)) {
+
+            // Fermeture classique (croix)
+            if (event.type == sf::Event::Closed)
+                return 0;
+
+            // N'importe quelle touche
+            if (event.type == sf::Event::KeyPressed)
+                return 0;
+        }
+    }
+
 
 }

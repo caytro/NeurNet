@@ -14,31 +14,33 @@ public:
 
     // Getters
     std::vector<Dendrite>& getDendrites();
-    std::vector<double>& getOutput();
     double getLearningRate() const;
     std::vector<double>& getZ();  // S(Wk . Xk) + b  , size  = DataSet.samples.size() = Un par échantillons
     std::vector<double>& getA();  // a(Z) ,  size(A) = size(Z)
     std::vector<double>& getE();  // A - Y , size(E) = size(A)
     std::vector<double>& getGradientW();  // S(ek . Xk) , Somme sur les échantillons, size == m_dendrites.size()
-
+    double getGradientB() const;
+    double getBiais() const;
 
     // Other
     std::vector<double> getWVector() const;
     void calcZ(const DataSet& dataSet);
+    void calcZ(); // Utilise dendrite.getSource().getA() en entrée
     void calcA();
-    double calcLogLoss(const DataSet& dataSet) const;
     void calcE(const DataSet& dataSet);
-    void calcGradient(const DataSet& dataSet);
+    double calcLogLoss(const DataSet& dataSet) const;
+    void calcGradientW(const DataSet& dataSet);
+    void calcGradientB();
     double activationFunction(double z) const;
-
+    void updateParams();
 
 private:
     double m_biais;
-    double m_output;  // Dimension = nbre de DataSample dans le dataSet en entrée
     std::vector<double> m_z;
     std::vector<double> m_a;
     std::vector<double> m_e;
-    std::vector<double> m_gradient;
+    std::vector<double> m_gradientW;
+    double m_gradientB;
     double m_learningRate;
     std::vector<Dendrite> m_dendrites; //Dimension : Dimension des DataSample du DataSet en entrée (nb de neurones dans la couche précédente)
 };
