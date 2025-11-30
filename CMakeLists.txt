@@ -37,7 +37,8 @@ set(SOURCES
     src/Dendrite.cpp
     src/Perceptron.cpp
     src/Graphic.cpp
-    src/Network.cpp
+    src/MultiLayerNetwork.cpp
+    src/Layer.cpp
 )
 # Trouver SFML
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)

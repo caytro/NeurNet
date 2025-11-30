@@ -11,10 +11,11 @@ using namespace std;
 
 
 // Constructors
+
 DataSet::DataSet():m_dimension(0), m_samples(0)
 {}
 
-DataSet::DataSet(size_t dimension): m_dimension(dimension), m_samples(0)
+DataSet::DataSet(size_t dimension): m_dimension(dimension), m_samples(0), m_mins(0), m_maxs(0)
 {}
 
 
@@ -24,13 +25,6 @@ void DataSet::setDimension(size_t dimension)
 {
     m_dimension = dimension;
 }
-
-void DataSet::addSample(vector<double>& input, double output)
-{
-    assert(input.size() == m_dimension);
-    m_samples.emplace_back(input, output);
-}
-
 
 // Getters
 
@@ -44,12 +38,19 @@ const vector<DataSample>& DataSet::getSamples() const
     return m_samples;
 }
 
-// Others
+
+// Other
+
+void DataSet::addSample(vector<double>& input, double output)
+{
+    assert(input.size() == m_dimension);
+    m_samples.emplace_back(input, output);
+}
 
 void DataSet::genereDiscDataset(size_t nSamples,
-                                double xc, double yc,
-                                double radius,
-                                double output)
+                               double xc, double yc,
+                               double radius,
+                               double output)
 {
     // Générateur aléatoire
     static random_device rd;
@@ -73,6 +74,10 @@ void DataSet::genereDiscDataset(size_t nSamples,
     }
 }
 
+
+
+// Normalization
+
 void DataSet::computeFeatureMinMax()
 {
     if (m_samples.empty()) return;
@@ -86,29 +91,29 @@ void DataSet::computeFeatureMinMax()
         // Mise à jour en parallèle des mins et maxs
         ranges::transform(
             v, m_mins, m_mins.begin(),
-            [](double val, double current) { return std::min(val, current); }
+            [](double val, double current) { return min(val, current); }
         );
 
         ranges::transform(
             v, m_maxs, m_maxs.begin(),
-            [](double val, double current) { return std::max(val, current); }
+            [](double val, double current) { return max(val, current); }
         );
     }
 }
-
-void DataSet::normalizeSample(DataSample& s)  {
-    auto& vec = s.getInput();
-    for (size_t i = 0; i < vec.size(); ++i) {
-        double denom = m_maxs[i] - m_mins[i];
-        vec[i] = (denom == 0.0) ? 0.0 : (vec[i] - m_mins[i]) / denom;
-    }
-}
-
 
 void DataSet::normalizeFeatureWise() {
     for (auto& s : m_samples)
         normalizeSample(s);
 }
+
+void DataSet::normalizeSample(DataSample& s)  {
+    auto& input = s.getInput();
+    for (size_t i = 0; i < input.size(); ++i) {
+        double denom = m_maxs[i] - m_mins[i];
+        input[i] = (denom == 0.0) ? 0.0 : (input[i] - m_mins[i]) / denom;
+    }
+}
+
 
 
 

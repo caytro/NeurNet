@@ -1,8 +1,8 @@
 #pragma once
-
-#include <vector>
 #include "Dendrite.hpp"
 #include "DataSet.hpp"
+
+#include <vector>
 
 class Perceptron {
 public:
@@ -22,7 +22,7 @@ public:
     double getGradientB() const;
     double getBiais() const;
 
-    // Other
+    // Compute
     std::vector<double> getWVector() const;
     void calcZ(const DataSet& dataSet);
     void calcZ(); // Utilise dendrite.getSource().getA() en entrée

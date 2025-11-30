@@ -1,7 +1,10 @@
 #include "Graphic.hpp"
 
+
+// Constructors
+
 Graphic::Graphic(const DataSet& dataSet, const Perceptron& perceptron)
-    : m_window(sf::VideoMode(800, 600), "Perceptron Decision Boundary"),
+    : m_window(sf::VideoMode(800, 800), "Perceptron Decision Boundary"),
     m_view(sf::FloatRect(-2.f, -2.f, 4.f, 4.f)),
     m_dataSet(dataSet),
     m_perceptron(perceptron),
@@ -11,6 +14,23 @@ Graphic::Graphic(const DataSet& dataSet, const Perceptron& perceptron)
     updateDecisionBoundary();
 }
 
+// Setters
+
+// Getters
+
+sf::RenderWindow& Graphic::getWindow()
+{
+    return m_window;
+}
+
+bool Graphic::isOpen() const
+{
+    return m_window.isOpen();
+}
+
+
+// Others
+
 void Graphic::updateDecisionBoundary()
 {
     const auto& w = m_perceptron.getWVector();
@@ -18,8 +38,8 @@ void Graphic::updateDecisionBoundary()
     double w2 = w[1];
     double b  = m_perceptron.getBiais();
 
-    float xmin = -100.f;
-    float xmax = 100.f;
+    float xmin = -3.f;
+    float xmax = 3.f;
 
     if (w2 != 0.0) {
         float y1 = (-w1 * xmin - b) / w2;
@@ -49,7 +69,7 @@ void Graphic::drawSamples()
         float py = x[1];
 
         sf::CircleShape point(0.01f);
-        point.setOrigin(0.01f, 0.01f);
+        point.setOrigin(0.005f, 0.005f);
         point.setPosition(px, py);
 
         point.setFillColor(s.getOutput() == 0 ? sf::Color::Blue
@@ -59,10 +79,6 @@ void Graphic::drawSamples()
     }
 }
 
-sf::RenderWindow& Graphic::getWindow()
-{
-    return m_window;
-}
 
 void Graphic::render()
 {

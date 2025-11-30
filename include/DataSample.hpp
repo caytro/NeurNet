@@ -1,6 +1,4 @@
-#ifndef DATASAMPLE_HPP
-#define DATASAMPLE_HPP
-
+#pragma once
 #include <vector>
 
 class DataSample
@@ -21,4 +19,4 @@ class DataSample
         double m_output;
 };
 
-#endif // DATASAMPLE_HPP
+

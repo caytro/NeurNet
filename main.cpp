@@ -44,11 +44,11 @@ int main()
     Perceptron input1, input2;
     neuron.addInput(input1, 1);
     neuron.addInput(input2, 1);
-    neuron.setLearningRate(0.00001);
+    neuron.setLearningRate(0.001);
 
     Graphic graphic(dataset1, neuron);
 
-    int maxIter = 100000;
+    int maxIter = 10000;
     for(int i=0; i < maxIter ; ++i)
     {
         neuron.calcZ(dataset1);

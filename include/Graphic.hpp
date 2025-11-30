@@ -1,17 +1,29 @@
 #pragma once
-
-#include <SFML/Graphics.hpp>
 #include "DataSet.hpp"
 #include "Perceptron.hpp"
 
+#include <SFML/Graphics.hpp>
+
 class Graphic {
 public:
+
+// Constructors
+
     Graphic(const DataSet& dataSet, const Perceptron& perceptron);
+
+// Setters
+
+
+// Getters
+
     sf::RenderWindow& getWindow() ;
+    bool isOpen() const;
+
+
+// Other
 
     void updateDecisionBoundary();   // recalculer la ligne
     void render();                   // afficher la frame
-    bool isOpen() const { return m_window.isOpen(); }
 
 private:
     sf::RenderWindow m_window;

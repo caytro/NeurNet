@@ -16,7 +16,7 @@ using namespace std;
 // Constructors
 /************************************/
 
-Perceptron::Perceptron(double biais): m_biais(biais)
+Perceptron::Perceptron(double biais): m_biais(biais), m_gradientB(0.0), m_learningRate(1.0)
 {}
 
 /***************************************/

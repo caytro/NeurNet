@@ -1,7 +1,9 @@
-#ifndef DATASET_HPP
+#pragma once
+
 #define DATASET_HPP
 
 #include <DataSample.hpp>
+
 #include <vector>
 #include <ranges>
 
@@ -9,20 +11,28 @@
 class DataSet
 {
     public:
+    // Constructors
         DataSet();
         explicit DataSet(size_t dimension);
+
+    // Setters
         void setDimension(size_t dimension);
+
+    // Getters
         size_t getDimension() const;
-        void addSample(std::vector<double>& input, double output);
         const std::vector<DataSample>& getSamples() const;
+
+    // Other
+        void addSample(std::vector<double>& input, double output);
         void genereDiscDataset(size_t nSamples,
                            double xc, double yc,
                            double radius,
                            double output);
+
+    // Normalization
         void computeFeatureMinMax();
         void normalizeFeatureWise();
         void normalizeSample(DataSample& s);
-
         const auto& mins() const;
         const auto& maxs() const;
 
@@ -35,4 +45,3 @@ class DataSet
         std::vector<double> m_maxs;
 };
 
-#endif // DATASET_HPP
