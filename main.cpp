@@ -1,10 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <random>
 
 #include "Perceptron.hpp"
 #include "DataSet.hpp"
 #include "Graphic.hpp"
+
 
 
 using namespace std;
@@ -16,8 +18,25 @@ int main()
     size_t nbSamples = 200;
     DataSet dataset1(inputDimension);
 
-    dataset1.genereDiscDataset(nbSamples / 2,  -2,  3, 3, 1);
-    dataset1.genereDiscDataset(nbSamples / 2, -2, -1, 2, 0);
+    // Génération d'un dataSet 2 classes centres et radius aléatoires (avant normalisation)
+
+    // Générateur aléatoire
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_real_distribution<double> x(-10.0, 10.0);
+    uniform_real_distribution<double> y(-10.0,10.0);
+    uniform_real_distribution<double> radius(0,4);
+
+    double xCenter1 = x(gen);
+    double xCenter2 = x(gen);
+    double yCenter1 = y(gen);
+    double yCenter2 = y(gen);
+    double radius1 = radius(gen);
+    double radius2 = radius(gen);
+
+
+    dataset1.genereDiscDataset(nbSamples / 2,  xCenter1,  yCenter1, radius1, 1);
+    dataset1.genereDiscDataset(nbSamples / 2, xCenter2, yCenter2, radius2, 0);
     dataset1.computeFeatureMinMax();
     dataset1.normalizeFeatureWise();
 
@@ -29,7 +48,7 @@ int main()
 
     Graphic graphic(dataset1, neuron);
 
-    int maxIter = 200000;
+    int maxIter = 100000;
     for(int i=0; i < maxIter ; ++i)
     {
         neuron.calcZ(dataset1);

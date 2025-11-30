@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(MonProjet LANGUAGES CXX)
+project(NeurNet1 LANGUAGES CXX)
 
 # ------------------------
 # C++20
@@ -43,8 +43,8 @@ set(SOURCES
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
 # Créer l'exécutable
-add_executable(MonProjet ${SOURCES})
+add_executable(NeurNet ${SOURCES})
 
 # Lier SFML
-target_link_libraries(MonProjet PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(NeurNet PRIVATE sfml-graphics sfml-window sfml-system)
 
