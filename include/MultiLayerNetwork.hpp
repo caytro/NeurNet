@@ -27,7 +27,7 @@ public:
     Layer& getInputLayer();
     Layer& getNthLayer(std::size_t numLayer);
 
-// Other
+// Compute
 
     void forwardPropagation();
 

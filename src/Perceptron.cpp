@@ -9,6 +9,7 @@
 #include <cassert>
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 
 using namespace std;
 
@@ -96,21 +97,39 @@ vector<double> Perceptron::getWVector() const {
     return w;
 }
 
-void Perceptron::calcZ(const DataSet &dataSet)
+void Perceptron::calcZ(const DataSet &dataSet) // inputNeurone
 {
     assert(dataSet.getDimension() == m_dendrites.size());
     const auto& samples = dataSet.getSamples();
     const auto& w = getWVector();
+    m_z = vector<double>(0);
+    m_z.reserve(samples.size());
+     for(const DataSample& sample : dataSet.getSamples())
+    {
+        vector<double> x = sample.getInput();
+        m_z.push_back(inner_product(x.begin(),x.end(), w.begin(), m_biais));
+    }
+}
 
-    m_z.assign(samples.size(), 0.0);
-
-    transform(samples.begin(), samples.end(),
-                   m_z.begin(),
-                   [&](const DataSample& s) {
-                       const auto& x = s.getInput();
-                       return inner_product(x.begin(), x.end(),
-                                                 w.begin(),m_biais);
-                   });
+void Perceptron::calcZ() // hiddenNeurone
+{
+    assert(m_dendrites.size() > 0);
+    size_t nbSamples0 = m_dendrites[0].getSource().getA().size();
+    for (const Dendrite& dendrite : m_dendrites)
+    {
+        if(dendrite.getSource().getA().size() != nbSamples0)
+        {
+            throw(runtime_error("Error : Tous les neurones sources doivent avoir le même nombre de samples"));
+        }
+    }
+    m_z = vector<double>(nbSamples0,m_biais);
+    for(size_t i = 0 ; i < nbSamples0 ; ++i)
+    {
+        for(const Dendrite& dendrite : m_dendrites)
+        {
+            m_z[i] += dendrite.getSource().getA()[i] * dendrite.getWeight();
+        }
+    }
 }
 
 void Perceptron::calcA()

@@ -27,6 +27,8 @@ public:
     void calcZ(const DataSet& dataSet);
     void calcZ(); // Utilise dendrite.getSource().getA() en entrée
     void calcA();
+    void compute(const DataSet& dataSet); // calcZ -> calcA pour un inputNeurone
+    void compute();
     void calcE(const DataSet& dataSet);
     double calcLogLoss(const DataSet& dataSet) const;
     void calcGradientW(const DataSet& dataSet);

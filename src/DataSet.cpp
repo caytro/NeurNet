@@ -1,4 +1,5 @@
 #include "DataSet.hpp"
+#include "DataSample.hpp"
 #include <vector>
 #include <cmath>
 #include <random>
@@ -16,7 +17,9 @@ DataSet::DataSet():m_dimension(0), m_samples(0)
 {}
 
 DataSet::DataSet(size_t dimension): m_dimension(dimension), m_samples(0), m_mins(0), m_maxs(0)
-{}
+{
+
+}
 
 
 // Setters

@@ -51,8 +51,6 @@ vector<vector<double>> MultiLayerNetwork::getOutput(){
         result.push_back(neurone.getA());
     }
     return result;
-;
-
 
 }
 Layer& MultiLayerNetwork::getOutputLayer()
@@ -60,6 +58,30 @@ Layer& MultiLayerNetwork::getOutputLayer()
     assert(m_layers.size() >= 2);
     return m_layers[m_layers.size() - 1];
 }
-// Layer& MultiLayerNetwork::getInputLayer();
-// Layer& MultiLayerNetwork::getNthLayer(std::size_t numLayer);
+Layer& MultiLayerNetwork::getInputLayer()
+{
+    assert(m_layers.size() > 0);
+    return m_layers[0];
+}
+
+Layer& MultiLayerNetwork::getNthLayer(std::size_t numLayer)
+{
+    assert(m_layers.size() > numLayer);
+    // First layer : m_layer[0]
+    return m_layers[numLayer];
+}
+
+// Compute
+
+void MultiLayerNetwork::forwardPropagation()
+{
+    assert(m_dataSet.getSamples().size() > 0);
+    assert(m_layers.size() > 0);
+    assert(m_layers[0].getNeurones().size() == m_dataSet.getDimension());
+
+    for(Perceptron& inputNeurone : m_layers[0].getNeurones())
+    {
+
+    }
+}
 
