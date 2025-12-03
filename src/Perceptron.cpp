@@ -4,12 +4,15 @@
 #include "Dendrite.hpp"
 
 #include <stdlib.h>
+#include <iostream>
+#include <string>
 #include <numeric>
 #include <cmath>
 #include <cassert>
 #include <algorithm>
 #include <numeric>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -17,7 +20,7 @@ using namespace std;
 // Constructors
 /************************************/
 
-Perceptron::Perceptron(double biais): m_biais(biais), m_gradientB(0.0), m_learningRate(1.0)
+Perceptron::Perceptron(): m_biais(0.0), m_gradientB(0.0),m_learningRate(1.0)
 {}
 
 /***************************************/
@@ -134,6 +137,7 @@ void Perceptron::calcZ() // hiddenNeurone
 
 void Perceptron::calcA()
 {
+    m_a=vector<double>(0);
     m_a.assign(m_z.size(),0.0);
     transform(
         m_z.begin(),
@@ -144,6 +148,18 @@ void Perceptron::calcA()
             return activationFunction(z);
         }
     );
+}
+
+void Perceptron::compute(const DataSet& dataSet)
+{
+    calcZ(dataSet);
+    calcA();
+}
+
+void Perceptron::compute()
+{
+    calcZ();
+    calcA();
 }
 
 void Perceptron::calcE(const DataSet& dataSet )
@@ -217,5 +233,19 @@ void Perceptron::updateParams()
     m_biais -= m_gradientB * m_learningRate;
 }
 
+// Display
+
+void Perceptron::display(int indent, size_t numSample)
+{
+    string pad(indent,' ');
+    cout << pad << "Perceptron" << endl;
+    for(Dendrite dendrite : m_dendrites)
+    {
+        cout << pad << " - w : " << dendrite.getWeight() << endl;
+    }
+    cout << pad << " - b : " << m_biais << endl;
+    cout << pad << " - z : " << m_z[numSample] << endl;
+    cout << pad << " - a : " << m_a[numSample] << endl;
+}
 
 

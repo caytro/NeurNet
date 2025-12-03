@@ -5,23 +5,47 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 
 using namespace std;
 // Constructorss
 
-MultiLayerNetwork::MultiLayerNetwork(){}
+MultiLayerNetwork::MultiLayerNetwork(vector<size_t> nbNeuronesParLayer)
+{
+    m_layers.clear();
+    for(size_t i = 0 ; i < nbNeuronesParLayer.size() ; ++i)
+    {
+        Layer newLayer(nbNeuronesParLayer[i]);
+        m_layers.push_back(newLayer);
+    }
+}
 
 // Setters
 
 void MultiLayerNetwork::setDataSet(DataSet& dataSet)
 {
     m_dataSet = dataSet;
+    m_inputNeurones.clear();
+    if(m_layers.size() > 0)
+    {
+        for(size_t i = 0 ; i < dataSet.getDimension() ; ++i)
+        {
+            Perceptron newInputNeurone;
+            m_inputNeurones.push_back(newInputNeurone);
+            for(Perceptron& neurone : m_layers[0].getNeurones())
+            {
+                neurone.addInput(newInputNeurone,1.0);
+            }
+        }
+    }
+
 }
 
 void MultiLayerNetwork::addLayer(Layer& layer)
 {
-    m_layers.push_back(layer);
+    m_layers.push_back(layer); // A changer : Les layers doivent être créées dans Network
+    // ex addLayer(nbNeurones) -> OK à nettoyer
 }
 
 // Getters
@@ -77,11 +101,17 @@ void MultiLayerNetwork::forwardPropagation()
 {
     assert(m_dataSet.getSamples().size() > 0);
     assert(m_layers.size() > 0);
-    assert(m_layers[0].getNeurones().size() == m_dataSet.getDimension());
 
-    for(Perceptron& inputNeurone : m_layers[0].getNeurones())
+
+    if(m_layers.size() > 0)
     {
-
+        DataSet& currentDataSet = m_dataSet;
+        for(size_t i = 0 ; i < m_layers.size() ;  ++i)
+        {
+            m_layers[i].computeNeurones(currentDataSet);
+            m_layers[i].calcOutputDataSet();
+            currentDataSet = m_layers[i].getDataSet();
+        }
     }
 }
 

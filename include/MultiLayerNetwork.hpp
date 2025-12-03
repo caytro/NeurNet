@@ -10,7 +10,7 @@ public:
 
 // Constructor
 
-    MultiLayerNetwork();
+    explicit MultiLayerNetwork(std::vector<size_t> nbNeuronesParLayer);
 
 // Setters
 
@@ -36,4 +36,7 @@ public:
 private:
     DataSet m_dataSet;
     std::vector<Layer> m_layers;
+    std::vector<Perceptron> m_inputNeurones; // N'ont pas de dendrite
+    // les inputNeurones seront créés et connectés aux neurones de layer[0] au moment du setDataSet
+
 };

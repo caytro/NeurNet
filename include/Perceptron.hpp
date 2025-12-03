@@ -2,14 +2,13 @@
 #include "Dendrite.hpp"
 #include "DataSet.hpp"
 
-#include <vector>
 
 class Perceptron {
 public:
-    explicit Perceptron(double biais = 0.0);
+    Perceptron();
 
     // Setters
-    void addInput(Perceptron& input, double weight);
+    void addInput(Perceptron& input, double weight = 1.0);
     void setLearningRate(double learningRate);
 
     // Getters
@@ -27,7 +26,7 @@ public:
     void calcZ(const DataSet& dataSet);
     void calcZ(); // Utilise dendrite.getSource().getA() en entrée
     void calcA();
-    void compute(const DataSet& dataSet); // calcZ -> calcA pour un inputNeurone
+    void compute(const DataSet& dataSet);
     void compute();
     void calcE(const DataSet& dataSet);
     double calcLogLoss(const DataSet& dataSet) const;
@@ -35,6 +34,9 @@ public:
     void calcGradientB();
     double activationFunction(double z) const;
     void updateParams();
+
+    // Display
+    void display(int indent, size_t numSample);
 
 private:
     double m_biais;

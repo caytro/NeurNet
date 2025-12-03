@@ -1,6 +1,6 @@
 #pragma once
 #include "Perceptron.hpp"
-
+#include "DataSet.hpp"
 #include <vector>
 
 
@@ -11,18 +11,29 @@ public:
 
 // Constructors
 
-    Layer();
+    explicit Layer(size_t nbNeurones);
 
 // Setters
 
-    void addNeurone(Perceptron& neurone);
+
 
 // Getters
+
     std::vector<Perceptron>& getNeurones();
+    DataSet& getDataSet();
+
+// Connexion
+
+    void fullConnect(Layer& layer);
+
+// Compute
+
+    void computeNeurones(const DataSet& dataSet);
+    void calcOutputDataSet();
 
 private:
 
     std::vector<Perceptron> m_neurones;
-
+    DataSet m_outputDataSet;
 
 };
