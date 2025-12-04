@@ -31,7 +31,7 @@ vector<Perceptron>& Layer::getNeurones()
     return m_neurones;
 }
 
-DataSet& Layer::getDataSet()
+DataSet& Layer::getOutputDataSet()
 {
     return m_outputDataSet;
 }

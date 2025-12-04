@@ -5,9 +5,7 @@
 using namespace std;
 
 DataSample::DataSample():m_input(0),m_output(0)
-{
-    //ctor
-}
+{}
 
 DataSample::DataSample(vector<double>&input, double output): m_input(input), m_output(output)
 {

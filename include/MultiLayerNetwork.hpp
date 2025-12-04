@@ -14,15 +14,15 @@ public:
 
 // Setters
 
-    void setDataSet(DataSet& dataSet);
-    void addLayer(Layer& layer);
+    void setInputDataSet(DataSet& dataSet);
+    void appendLayer(size_t nbNeurones);
     // layer[0] est la couche d'entrée, Layer[nbLayer - 1] est la couche de sortie
 
 // Getters
 
-    DataSet& getDataSet();
+    DataSet& getInputDataSet();
     std::vector<Layer>& getLayers();
-    std::vector<std::vector<double>> getOutput();
+    DataSet& getOutputDataSet();
     Layer& getOutputLayer();
     Layer& getInputLayer();
     Layer& getNthLayer(std::size_t numLayer);
@@ -34,7 +34,7 @@ public:
 
 
 private:
-    DataSet m_dataSet;
+    DataSet m_inputDataSet;
     std::vector<Layer> m_layers;
     std::vector<Perceptron> m_inputNeurones; // N'ont pas de dendrite
     // les inputNeurones seront créés et connectés aux neurones de layer[0] au moment du setDataSet

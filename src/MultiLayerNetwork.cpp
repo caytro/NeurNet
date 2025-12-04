@@ -18,14 +18,18 @@ MultiLayerNetwork::MultiLayerNetwork(vector<size_t> nbNeuronesParLayer)
     {
         Layer newLayer(nbNeuronesParLayer[i]);
         m_layers.push_back(newLayer);
+        if(i > 0) // First layer will be connected to input neurones when setDataSet(dataSet)
+        {
+            newLayer.fullConnect(m_layers[i-1]);
+        }
     }
 }
 
 // Setters
 
-void MultiLayerNetwork::setDataSet(DataSet& dataSet)
+void MultiLayerNetwork::setInputDataSet(DataSet& dataSet)
 {
-    m_dataSet = dataSet;
+    m_inputDataSet = dataSet;
     m_inputNeurones.clear();
     if(m_layers.size() > 0)
     {
@@ -42,17 +46,21 @@ void MultiLayerNetwork::setDataSet(DataSet& dataSet)
 
 }
 
-void MultiLayerNetwork::addLayer(Layer& layer)
+void MultiLayerNetwork::appendLayer(size_t nbNeurones)
 {
-    m_layers.push_back(layer); // A changer : Les layers doivent être créées dans Network
-    // ex addLayer(nbNeurones) -> OK à nettoyer
+    Layer newLayer = Layer(nbNeurones);
+    m_layers.push_back(newLayer);
+    if(m_layers.size() > 1)
+    {
+        newLayer.fullConnect(m_layers[m_layers.size() - 2]);
+    }
 }
 
 // Getters
 
-DataSet& MultiLayerNetwork::getDataSet()
+DataSet& MultiLayerNetwork::getInputDataSet()
 {
-    return m_dataSet;
+    return m_inputDataSet;
 }
 
 vector<Layer>& MultiLayerNetwork::getLayers()
@@ -60,23 +68,12 @@ vector<Layer>& MultiLayerNetwork::getLayers()
     return m_layers;
 }
 
-vector<vector<double>> MultiLayerNetwork::getOutput(){
-    // result[i][j] = output du neurone i pour le dataSample j
-
-    if (m_layers.size() < 2)
-    {
-        return vector<vector<double>>(0);
-    }
-    vector<Perceptron> outputLayerNeurones = getOutputLayer().getNeurones();
-    vector<vector<double>> result; // Pour chaque neurone, un vector<double> par dataSample
-    result.reserve(outputLayerNeurones.size() * m_dataSet.getSamples().size());
-    for(Perceptron& neurone : outputLayerNeurones)
-    {
-        result.push_back(neurone.getA());
-    }
-    return result;
-
+DataSet& MultiLayerNetwork::getOutputDataSet()
+{
+    m_layers.end()->calcOutputDataSet();
+    return m_layers.end()->getOutputDataSet();
 }
+
 Layer& MultiLayerNetwork::getOutputLayer()
 {
     assert(m_layers.size() >= 2);
@@ -99,18 +96,18 @@ Layer& MultiLayerNetwork::getNthLayer(std::size_t numLayer)
 
 void MultiLayerNetwork::forwardPropagation()
 {
-    assert(m_dataSet.getSamples().size() > 0);
+    assert(m_inputDataSet.getSamples().size() > 0);
     assert(m_layers.size() > 0);
 
 
     if(m_layers.size() > 0)
     {
-        DataSet& currentDataSet = m_dataSet;
+        DataSet& currentDataSet = m_inputDataSet;
         for(size_t i = 0 ; i < m_layers.size() ;  ++i)
         {
             m_layers[i].computeNeurones(currentDataSet);
             m_layers[i].calcOutputDataSet();
-            currentDataSet = m_layers[i].getDataSet();
+            currentDataSet = m_layers[i].getOutputDataSet();
         }
     }
 }

@@ -39,7 +39,7 @@ class DataSet
     protected:
 
     private:
-        size_t m_dimension; // Utile ?
+        size_t m_dimension;
         std::vector<DataSample> m_samples;
         std::vector<double> m_mins;
         std::vector<double> m_maxs;

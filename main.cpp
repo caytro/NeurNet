@@ -28,7 +28,7 @@ int main()
     {
         network.getNthLayer(i).fullConnect(network.getNthLayer(i-1));
     }
-    network.setDataSet(dataSet);
+    network.setInputDataSet(dataSet);
 
     network.getNthLayer(0).getNeurones()[0].getDendrites()[0].setWeight(0.5);
 

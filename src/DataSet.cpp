@@ -46,8 +46,14 @@ const vector<DataSample>& DataSet::getSamples() const
 
 void DataSet::addSample(vector<double>& input, double output)
 {
-    assert(input.size() == m_dimension);
-    m_samples.emplace_back(input, output);
+    if(input.size() == m_dimension)
+    {
+        m_samples.emplace_back(input, output);
+    }
+    else
+    {
+        throw("Error : Sample and dataSet should have same dimension");
+    }
 }
 
 void DataSet::genereDiscDataset(size_t nSamples,

@@ -20,7 +20,7 @@ public:
 // Getters
 
     std::vector<Perceptron>& getNeurones();
-    DataSet& getDataSet();
+    DataSet& getOutputDataSet();
 
 // Connexion
 
