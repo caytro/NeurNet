@@ -30,6 +30,7 @@ public:
 // Compute
 
     void forwardPropagation();
+    void backPropagation();
 
 
 

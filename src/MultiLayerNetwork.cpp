@@ -112,3 +112,7 @@ void MultiLayerNetwork::forwardPropagation()
     }
 }
 
+void MultiLayerNetwork::backPropagation()
+{
+
+}

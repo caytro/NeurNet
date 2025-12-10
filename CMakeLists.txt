@@ -39,12 +39,14 @@ set(SOURCES
     src/Graphic.cpp
     src/MultiLayerNetwork.cpp
     src/Layer.cpp
+    src/Matrix.cpp
 )
 # Trouver SFML
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
 # Créer l'exécutable
-add_executable(NeurNet ${SOURCES})
+add_executable(NeurNet ${SOURCES}
+    )
 
 # Lier SFML
 target_link_libraries(NeurNet PRIVATE sfml-graphics sfml-window sfml-system)
