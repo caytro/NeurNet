@@ -24,7 +24,7 @@ int main()
         for(size_t j = 0 ; j < A.getNbCol() ; j++ )
             A.setValue(i,j,double((j + 1) + ( i * A.getNbCol())));
 
-    Matrix B(5,3);
+    Matrix B(3,4);
     for(size_t i = 0; i < B.getNbLig() ; ++i )
         for(size_t j = 0 ; j < B.getNbCol() ; j++ )
             B.setValue(i,j,double(((j + 1) + ( i * B.getNbCol())) % 2));
@@ -33,9 +33,44 @@ int main()
     A.display();
     cout << "B=" << endl;
     B.display();
-    Matrix C = A.MultiplyMatrix(B,true,true);
+    Matrix C = A + B;
     cout << "C=" << endl;
     C.display();
+    B += C;
+    cout << "B=" << endl;
+    B.display();
+    Matrix D(3,1,1);
+    B += D;
+    cout << "B + D =" << endl;
+    B.display();
+    cout << endl << "Produit" << endl;
+
+    A =  Matrix(3,4);
+    for(size_t i = 0; i < A.getNbLig() ; ++i )
+        for(size_t j = 0 ; j < A.getNbCol() ; j++ )
+            A.setValue(i,j,double((j + 1) + ( i * A.getNbCol())));
+
+    B = Matrix(4,3);
+    for(size_t i = 0; i < B.getNbLig() ; ++i )
+        for(size_t j = 0 ; j < B.getNbCol() ; j++ )
+            B.setValue(i,j,double(((j + 1) + ( i * B.getNbCol())) % 2));
+
+
+    cout << endl << "A=" << endl;
+    A.display();
+    cout << endl << "B=" << endl;
+    B.display();
+    cout << endl << "A2 = A * 2" << endl;
+    Matrix A2 = A * 2;
+    A2.display();
+    cout << endl << "A *=3" << endl;
+    A *= 3;
+    A.display();
+
+    C = A * B;
+    cout << endl << "C=A*B" << endl;
+    C.display();
+
     exit(0);
     // dataSet.computeFeatureMinMax();
     // dataSet.normalizeFeatureWise();

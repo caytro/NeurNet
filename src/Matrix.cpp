@@ -7,11 +7,11 @@ using namespace std;
 
 // Constructors
 
-Matrix::Matrix(size_t nbLig, size_t nbCol):m_nbLig(nbLig), m_nbCol(nbCol)
+Matrix::Matrix(size_t nbLig, size_t nbCol, double value):m_nbLig(nbLig), m_nbCol(nbCol)
 {
     for(size_t i = 0 ; i < m_nbLig ; ++i)
     {
-        vector<double> newLine(nbCol,0);
+        vector<double> newLine(nbCol,value);
         m_matrix.push_back(newLine);
     }
 }
@@ -60,10 +60,21 @@ vector<double> Matrix::getNthCol(size_t n) const
     return col;
 }
 
+double Matrix::getElement(size_t lig, size_t col) const
+{
+    if ((lig < m_nbLig) && (col < m_nbCol))
+    {
+        return m_matrix[lig][col];
+    }
+    else
+    {
+        throw(out_of_range(string(lig + "," + col)));
+    }
+}
 
 // Compute
 
-Matrix Matrix::MultiplyMatrix(const Matrix& B, bool transposeA, bool transposeB) const
+Matrix Matrix::multiply(const Matrix& B, bool transposeA, bool transposeB) const
 {
     // return matrix this x B
     // transpose1 <=> transpose this
@@ -147,6 +158,72 @@ Matrix Matrix::MultiplyMatrix(const Matrix& B, bool transposeA, bool transposeB)
     }
 }
 
+
+
+
+Matrix Matrix::hadamard(const Matrix& B) const
+{
+    if (( m_nbLig == B.getNbLig()) && (m_nbCol == B.getNbCol()))
+    {
+        Matrix product(m_nbLig, m_nbCol);
+        for(size_t i = 0 ; i < m_nbLig ; ++i)
+        {
+            for(size_t j = 0 ; j < m_nbCol ; ++j)
+            {
+                product.setValue(i,j, m_matrix[i][j] * B.getElement(i,j));
+            }
+        }
+        return product;
+    }
+    else
+    {
+        throw(logic_error("Matrix dimensions should be equals"));
+    }
+}
+
+void Matrix::multiply(double coef)
+{
+    for(size_t i= 0 ; i < m_nbLig ; ++i)
+    {
+        for(size_t j = 0 ; j < m_nbCol ; ++j)
+        {
+            setValue(i,j,m_matrix[i][j] * coef);
+        }
+    }
+}
+
+Matrix& Matrix::operator *=(double lambda)
+{
+    multiply(lambda);
+    return(*this);
+}
+
+
+void Matrix::add(const Matrix &B, bool broadcast)
+{
+    if((m_nbLig == B.getNbLig()) && ((!broadcast && (m_nbCol == B.getNbCol())) || (broadcast && B.getNbCol() == 1)))
+    {
+        for(size_t i = 0 ; i < m_nbLig ; ++i)
+        {
+            for(size_t j = 0 ; j < m_nbCol ; ++j){
+                m_matrix[i][j] += (broadcast ? B.getElement(i,0) : B.getElement(i,j));
+            }
+        }
+    }
+    else
+    {
+        throw(logic_error("Error matrix should have same nbLig. Matrix should have sams nbCol in not broadcast, else B.nbCol() should be equal 1"));
+    }
+}
+
+Matrix& Matrix::operator+=(const Matrix &B)
+{
+    add(B,(B.m_nbCol == 1)); // If B.m_nbCol == 1 then broadcast
+    return(*this);
+}
+
+
+
 // Display
 
 void Matrix::display() const
@@ -160,4 +237,24 @@ void Matrix::display() const
         cout << endl;
     }
 
+}
+
+// Free
+
+Matrix operator+(Matrix A, const Matrix& B)
+{
+    A.add(B);
+    return A;
+}
+
+Matrix operator*(Matrix A, const Matrix& B)
+{
+    Matrix C = A.multiply(B);
+    return C;
+}
+
+Matrix operator*(Matrix A, double lambda)
+{
+    A.multiply(lambda);
+    return A;
 }
