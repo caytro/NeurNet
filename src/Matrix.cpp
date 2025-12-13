@@ -1,6 +1,11 @@
 #include "Matrix.hpp"
 #include <iostream>
 #include <numeric>
+#include <cmath>
+#include <algorithm>
+
+#include "NeurNetDefs.hpp"
+
 
 using namespace std;
 
@@ -223,6 +228,27 @@ Matrix& Matrix::operator+=(const Matrix &B)
 }
 
 
+void Matrix::apply(nn::Activation act)
+{
+    auto f = [&](double x)
+    {
+        switch (act)
+        {
+            case nn::Activation::Relu:
+                return x > 0.0 ? x : 0.0;
+            case nn::Activation::Logistic:
+                return 1.0 / (1.0 + exp(-x));
+            default:
+                throw(invalid_argument("Invalid activation function"));
+        }
+    };
+
+    for_each(m_matrix.begin(), m_matrix.end(),
+                  [&](vector<double>& row)
+                  {
+                      transform(row.begin(), row.end(), row.begin(), f);
+                  });
+}
 
 // Display
 
@@ -236,7 +262,6 @@ void Matrix::display() const
         }
         cout << endl;
     }
-
 }
 
 // Free

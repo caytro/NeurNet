@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "NeurNetDefs.hpp"
 
 
 class Matrix
@@ -31,6 +32,7 @@ public:
     Matrix hadamard(const Matrix& B) const;
     void add(const Matrix& B, bool broadcast = false) ;
     Matrix& operator +=(const Matrix &B);
+    void apply(nn::Activation act);
 
     // Display
 
