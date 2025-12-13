@@ -9,24 +9,26 @@ public:
 
 
     // Constructors
-
     Matrix(size_t nbLig, size_t nbCol, double value = 0.0);
-
+    Matrix();
     // Setters
     void setValue(size_t i , size_t j, double value);
+    void appendCols(const Matrix& cols);
+    void appendLines(const Matrix& lines);
 
     // Getters
     size_t getNbLig() const;
     size_t getNbCol() const;
-    std::vector<double> getNthLig(size_t n) const;
+    std::vector<double>& getNthLig(size_t n) ;
     std::vector<double> getNthCol(size_t n) const;
     double getElement(size_t lig, size_t col) const;
+    std::vector<std::vector<double>>& getMatrix() ;
 
 
 
     // Compute
 
-    Matrix multiply(const Matrix& B, bool transposeA = false, bool transposeB = false) const ;
+    Matrix multiply(Matrix &B, bool transposeA = false, bool transposeB = false) ;
     void multiply(double lambda) ;
     Matrix& operator*=(double lambda);
     Matrix hadamard(const Matrix& B) const;
@@ -49,5 +51,5 @@ private:
 };
 
 Matrix operator+(Matrix A, const Matrix &B);
-Matrix operator*(Matrix A, const Matrix &B);
+Matrix operator*(Matrix A,  Matrix &B);
 Matrix operator*(Matrix A, double lambda);

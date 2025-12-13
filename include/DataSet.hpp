@@ -1,29 +1,29 @@
 #pragma once
 
-#define DATASET_HPP
-
-#include <DataSample.hpp>
-
+#include "Matrix.hpp"
 #include <vector>
-#include <ranges>
-
 
 class DataSet
 {
     public:
     // Constructors
         DataSet();
-        explicit DataSet(size_t dimension);
+        DataSet(size_t inputDimension, size_t outputDimension);
 
     // Setters
-        void setDimension(size_t dimension);
+        void setInputDimension(size_t inputDimension);
+        void setOutputDimension(size_t outputDimension);
+        void addSample(const Matrix& sampleInput, const Matrix& sampleOutput);
 
     // Getters
-        size_t getDimension() const;
-        const std::vector<DataSample>& getSamples() const;
+        size_t getInputDimension() const;
+        size_t getOutputDimension() const;
+        Matrix& getInput();
+        Matrix& getOutput();
 
     // Other
-        void addSample(std::vector<double>& input, double output);
+
+        // genereDiscDataset à conserver comme modèle pour dimension N
         void genereDiscDataset(size_t nSamples,
                            double xc, double yc,
                            double radius,
@@ -32,15 +32,16 @@ class DataSet
     // Normalization
         void computeFeatureMinMax();
         void normalizeFeatureWise();
-        void normalizeSample(DataSample& s);
-        const auto& mins() const;
-        const auto& maxs() const;
+        // const auto& mins() const;
+        // const auto& maxs() const;
 
     protected:
 
     private:
-        size_t m_dimension;
-        std::vector<DataSample> m_samples;
+        size_t m_inputDimension;
+        size_t m_outputDimension;
+        Matrix m_input;
+        Matrix m_output;
         std::vector<double> m_mins;
         std::vector<double> m_maxs;
 };

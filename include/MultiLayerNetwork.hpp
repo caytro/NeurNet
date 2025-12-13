@@ -1,6 +1,6 @@
 #pragma once
-#include "Perceptron.hpp"
 #include "Layer.hpp"
+#include "NeurNetDefs.hpp"
 
 #include <vector>
 
@@ -10,7 +10,9 @@ public:
 
 // Constructor
 
-    explicit MultiLayerNetwork(std::vector<size_t> nbNeuronesParLayer);
+    MultiLayerNetwork(std::vector<size_t> nbNeuronesPerLayer,
+                      size_t inputDimension,
+                      nn::Activation act);
 
 // Setters
 
@@ -23,9 +25,7 @@ public:
     DataSet& getInputDataSet();
     std::vector<Layer>& getLayers();
     DataSet& getOutputDataSet();
-    Layer& getOutputLayer();
-    Layer& getInputLayer();
-    Layer& getNthLayer(std::size_t numLayer);
+
 
 // Compute
 
@@ -35,9 +35,11 @@ public:
 
 
 private:
-    DataSet m_inputDataSet;
+    size_t m_inputDimension;
+
+    nn::Activation m_act;
     std::vector<Layer> m_layers;
-    std::vector<Perceptron> m_inputNeurones; // N'ont pas de dendrite
-    // les inputNeurones seront créés et connectés aux neurones de layer[0] au moment du setDataSet
+    DataSet m_inputDataSet;
+
 
 };

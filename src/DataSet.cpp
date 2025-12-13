@@ -1,5 +1,4 @@
 #include "DataSet.hpp"
-#include "DataSample.hpp"
 #include <vector>
 #include <cmath>
 #include <random>
@@ -8,15 +7,19 @@
 #include <limits>
 #include <cassert>
 
+#include "Matrix.hpp"
+
 using namespace std;
 
 
 // Constructors
 
-DataSet::DataSet():m_dimension(0), m_samples(0)
+DataSet::DataSet():m_inputDimension(0), m_outputDimension(0)
 {}
 
-DataSet::DataSet(size_t dimension): m_dimension(dimension), m_samples(0), m_mins(0), m_maxs(0)
+DataSet::DataSet(size_t inputDimension, size_t outputDimension):
+    m_inputDimension(inputDimension),m_outputDimension(outputDimension),
+    m_mins(0), m_maxs(0)
 {
 
 }
@@ -24,64 +27,80 @@ DataSet::DataSet(size_t dimension): m_dimension(dimension), m_samples(0), m_mins
 
 // Setters
 
-void DataSet::setDimension(size_t dimension)
+void DataSet::setInputDimension(size_t inputDimension)
 {
-    m_dimension = dimension;
+    m_inputDimension = inputDimension;
 }
+
+void DataSet::setOutputDimension(size_t outputDimension)
+{
+    m_outputDimension = outputDimension;
+}
+
+void DataSet::addSample(const Matrix& sampleInput, const Matrix& sampleOutput)
+{
+    if((sampleInput.getNbLig() != m_inputDimension) || (sampleOutput.getNbLig() != m_outputDimension))
+        throw("Error : Sample and dataSet should have same dimension");
+
+    m_input.appendCols(sampleInput);
+    m_output.appendCols(sampleOutput);
+}
+
 
 // Getters
 
-size_t DataSet::getDimension() const
+size_t DataSet::getInputDimension() const
 {
-    return m_dimension;
+    return m_inputDimension;
 }
 
-const vector<DataSample>& DataSet::getSamples() const
+size_t DataSet::getOutputDimension() const
 {
-    return m_samples;
+    return m_outputDimension;
 }
+
+Matrix &DataSet::getInput()
+{
+    return m_input;
+}
+
+Matrix &DataSet::getOutput()
+{
+    return m_output;
+}
+
 
 
 // Other
 
-void DataSet::addSample(vector<double>& input, double output)
-{
-    if(input.size() == m_dimension)
-    {
-        m_samples.emplace_back(input, output);
-    }
-    else
-    {
-        throw("Error : Sample and dataSet should have same dimension");
-    }
-}
+// genereDiscDataset todo : rewrite with Matrix
 
-void DataSet::genereDiscDataset(size_t nSamples,
-                               double xc, double yc,
-                               double radius,
-                               double output)
-{
-    // Générateur aléatoire
-    static random_device rd;
-    static mt19937 gen(rd());
-    uniform_real_distribution<double> distAngle(0.0, 2.0 * M_PI);
-    uniform_real_distribution<double> distRadius(0.0, 1.0);
+// void DataSet::genereDiscDataset(size_t nSamples,
+//                                double xc, double yc,
+//                                double radius,
+//                                double output)
+// {
+//     // Générateur aléatoire
+//     static random_device rd;
+//     static mt19937 gen(rd());
+//     uniform_real_distribution<double> distAngle(0.0, 2.0 * M_PI);
+//     uniform_real_distribution<double> distRadius(0.0, 1.0);
 
-    for (size_t i = 0; i < nSamples; ++i)
-    {
-        double theta = distAngle(gen);
-        double u = distRadius(gen);
+//     for (size_t i = 0; i < nSamples; ++i)
+//     {
+//         double theta = distAngle(gen);
+//         double u = distRadius(gen);
 
-        // Rayon distribué uniformément
-        double r = radius * sqrt(u);
+//         // Rayon distribué uniformément
+//         double r = radius * sqrt(u);
 
-        double x = xc + r * cos(theta);
-        double y = yc + r * sin(theta);
+//         double x = xc + r * cos(theta);
+//         double y = yc + r * sin(theta);
 
-        vector<double> input = { x, y };
-        addSample(input, output);
-    }
-}
+//         vector<double> input = { x, y };
+//         addSample(input, output);
+//     }
+// }
 
 
 
@@ -89,39 +108,37 @@ void DataSet::genereDiscDataset(size_t nSamples,
 
 void DataSet::computeFeatureMinMax()
 {
-    if (m_samples.empty()) return;
+    if (m_input.getNbCol() == 0) return;
 
-    m_mins.assign(m_dimension,  numeric_limits<double>::infinity());
-    m_maxs.assign(m_dimension, -numeric_limits<double>::infinity());
+    m_mins.assign(m_inputDimension,  numeric_limits<double>::infinity());
+    m_maxs.assign(m_inputDimension, -numeric_limits<double>::infinity());
 
-    for (const auto& sample : m_samples) {
-        const auto& v = sample.getInput();
-
-        // Mise à jour en parallèle des mins et maxs
-        ranges::transform(
-            v, m_mins, m_mins.begin(),
-            [](double val, double current) { return min(val, current); }
-        );
-
-        ranges::transform(
-            v, m_maxs, m_maxs.begin(),
-            [](double val, double current) { return max(val, current); }
-        );
+    for(size_t feature = 0 ; feature < m_inputDimension ; ++feature)
+    {
+        const vector<double>& row = m_input.getNthLig(feature);
+        m_mins[feature] = *min_element(row.begin(), row.end());
+        m_maxs[feature] = *max_element(row.begin(), row.end());
     }
+
 }
 
 void DataSet::normalizeFeatureWise() {
-    for (auto& s : m_samples)
-        normalizeSample(s);
-}
-
-void DataSet::normalizeSample(DataSample& s)  {
-    auto& input = s.getInput();
-    for (size_t i = 0; i < input.size(); ++i) {
-        double denom = m_maxs[i] - m_mins[i];
-        input[i] = (denom == 0.0) ? 0.0 : (input[i] - m_mins[i]) / denom;
+    for (size_t i = 0 ; i < m_inputDimension ; ++i)
+    {
+        vector<double>& feature = m_input.getNthLig(i);
+        double denominator = m_maxs[i] - m_mins[i];
+        transform(
+            feature.begin(),
+            feature.end(),
+            feature.begin(),
+            [&](double currentValue)
+            {
+                return (denominator == 0.0) ? 0.0 : (currentValue - m_mins[i]) / denominator;
+            }
+            );
     }
 }
+
 
 
 

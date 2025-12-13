@@ -35,8 +35,7 @@ set(SOURCES
     src/DataSample.cpp
     src/DataSet.cpp
     src/Dendrite.cpp
-    src/Perceptron.cpp
-    src/Graphic.cpp
+#    src/Graphic.cpp
     src/MultiLayerNetwork.cpp
     src/Layer.cpp
     src/Matrix.cpp

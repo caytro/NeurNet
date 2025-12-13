@@ -1,8 +1,7 @@
 #pragma once
-#include "Perceptron.hpp"
 #include "DataSet.hpp"
-#include <vector>
-
+#include "Matrix.hpp"
+#include "NeurNetDefs.hpp"
 
 class Layer
 {
@@ -11,29 +10,36 @@ public:
 
 // Constructors
 
-    explicit Layer(size_t nbNeurones);
+    Layer(size_t nbNeurones, size_t inputDataDimension,
+          size_t inputDataSetSize);
 
 // Setters
 
 
 
+
 // Getters
 
-    std::vector<Perceptron>& getNeurones();
-    DataSet& getOutputDataSet();
+    size_t getNbNeurones() const;
+    Matrix& getW() ;
+    Matrix& getB() ;
+    Matrix& getZ() ;
+    Matrix& getA() ;
 
-// Connexion
 
-    void fullConnect(Layer& layer);
 
 // Compute
 
-    void computeNeurones(const DataSet& dataSet);
-    void calcOutputDataSet();
+    void computeZ(Matrix &input);
+    void computeA(Matrix &input);
+
 
 private:
 
-    std::vector<Perceptron> m_neurones;
-    DataSet m_outputDataSet;
-
+    size_t m_nbNeurones;
+    Matrix m_W;
+    Matrix m_Z;
+    Matrix m_A;
+    Matrix m_B; // Utile ? Rajouter une entrée à 1 dans le vecteur Input ?
+    nn::Activation m_act;
 };

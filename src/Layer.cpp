@@ -1,6 +1,7 @@
 #include "Layer.hpp"
 #include "DataSample.hpp"
-#include "Perceptron.hpp"
+#include "Matrix.hpp"
+#include "NeurNetDefs.hpp"
 
 #include <vector>
 
@@ -9,69 +10,60 @@ using namespace std;
 
 // Constructors
 
-Layer::Layer(size_t nbNeurones)
+/* inputDataSetSize = Nombre d'échantillons dans le dataSet
+  inputDataDimension = dimension des échantillons
+*/
+
+Layer::Layer(size_t nbNeurones, size_t inputDataDimension, size_t inputDataSetSize): m_nbNeurones(nbNeurones)
 {
-    m_neurones = vector<Perceptron>(0);
-    for(size_t i = 0 ; i < nbNeurones ; ++i)
-    {
-        Perceptron newNeurone;
-        m_neurones.push_back(newNeurone);
-    }
+    m_W = Matrix(nbNeurones, inputDataDimension,1.0);
+    m_Z = Matrix(nbNeurones, inputDataSetSize, 0.0);
+    m_A = Matrix(nbNeurones, inputDataSetSize, 0.0);
+    m_B = Matrix(nbNeurones, 1, 0.0);
+    m_act = nn::Activation::Logistic;
+
 }
-
-
-// Setters
-
 
 
 // Getters
 
-vector<Perceptron>& Layer::getNeurones()
+size_t Layer::getNbNeurones() const
 {
-    return m_neurones;
+    return m_nbNeurones;
 }
 
-DataSet& Layer::getOutputDataSet()
+Matrix &Layer::getW()
 {
-    return m_outputDataSet;
+    return m_W;
 }
 
-// Connexion
-
-void Layer::fullConnect(Layer& layer)
+Matrix &Layer::getB()
 {
-    for(Perceptron& neurone1 : m_neurones)
-    {
-        for(Perceptron& neurone2 : layer.getNeurones())
-        {
-            neurone1.addInput(neurone2);
-        }
-    }
-
+    return m_B;
 }
+
+Matrix &Layer::getZ()
+{
+    return m_Z;
+}
+
+Matrix &Layer::getA()
+{
+    return m_A;
+}
+
+void Layer::computeZ( Matrix& input)
+{
+    m_Z = m_W * input + m_B;
+}
+
+void Layer::computeA( Matrix& input)
+{
+    computeZ(input);
+    m_A = m_Z;
+    m_A.apply(nn::Activation::Logistic);
+}
+
 // Compute
 
-void Layer::computeNeurones(const DataSet& dataSet)
-{
-    for(Perceptron& neurone : m_neurones)
-    {
-        neurone.compute(dataSet);
-    }
-}
 
-void Layer::calcOutputDataSet()
-{
-    m_outputDataSet = DataSet(m_neurones.size());
-    if(m_neurones.size() > 0)
-    {
-        for(size_t i = 0 ; i < m_neurones[0].getA().size() ; ++i)
-        {
-            vector<double> currentInput(0);
-            for(size_t j = 0 ; j < m_neurones.size() ; ++j)
-            {
-                currentInput.push_back(m_neurones[j].getA()[i]);
-            }
-            m_outputDataSet.addSample(currentInput,0);
-        }
-    }
-}

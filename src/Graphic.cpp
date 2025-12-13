@@ -61,22 +61,22 @@ void Graphic::updateDecisionBoundary()
 
 void Graphic::drawSamples()
 {
-    const auto& samples = m_dataSet.getSamples();
+//     const auto& samples = m_dataSet.getSamples();
 
-    for (const auto& s : samples) {
-        const auto& x = s.getInput();
-        float px = x[0];
-        float py = x[1];
+//     for (const auto& s : samples) {
+//         const auto& x = s.getInput();
+//         float px = x[0];
+//         float py = x[1];
 
-        sf::CircleShape point(0.01f);
-        point.setOrigin(0.005f, 0.005f);
-        point.setPosition(px, py);
+//         sf::CircleShape point(0.01f);
+//         point.setOrigin(0.005f, 0.005f);
+//         point.setPosition(px, py);
 
-        point.setFillColor(s.getOutput() == 0 ? sf::Color::Blue
-                                              : sf::Color::Green);
+//         point.setFillColor(s.getOutput() == 0 ? sf::Color::Blue
+//                                               : sf::Color::Green);
 
-        m_window.draw(point);
-    }
+//         m_window.draw(point);
+//     }
 }
 
 

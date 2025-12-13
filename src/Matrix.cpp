@@ -12,6 +12,7 @@ using namespace std;
 
 // Constructors
 
+
 Matrix::Matrix(size_t nbLig, size_t nbCol, double value):m_nbLig(nbLig), m_nbCol(nbCol)
 {
     for(size_t i = 0 ; i < m_nbLig ; ++i)
@@ -20,7 +21,10 @@ Matrix::Matrix(size_t nbLig, size_t nbCol, double value):m_nbLig(nbLig), m_nbCol
         m_matrix.push_back(newLine);
     }
 }
+Matrix::Matrix():m_nbLig(0), m_nbCol(0)
+{
 
+}
 // Setters
 
 void Matrix::setValue(size_t i, size_t j, double value)
@@ -31,6 +35,43 @@ void Matrix::setValue(size_t i, size_t j, double value)
     }
     m_matrix[i][j] = value;
 }
+
+void Matrix::appendCols(const Matrix &cols)
+{
+    if(cols.m_nbLig != m_nbLig)
+        throw(invalid_argument("Dimensions invalides"));
+
+    for (size_t i = 0; i < m_nbLig; ++i)
+    {
+        m_matrix[i].reserve(
+            m_matrix[i].size() + cols.m_matrix[i].size()
+            );
+        copy(
+            cols.m_matrix[i].begin(),
+            cols.m_matrix[i].end(),
+            back_inserter(m_matrix[i])
+            );
+    }
+    m_nbCol += cols.m_nbCol;
+}
+
+void Matrix::appendLines(const Matrix &lines)
+{
+    if (lines.m_nbCol != m_nbCol)
+        throw(invalid_argument("Dimensions invalides"));
+    m_matrix.reserve(m_matrix.size() + lines.m_matrix.size());
+    copy(
+        lines.m_matrix.begin(),
+        lines.m_matrix.end(),
+        back_inserter(m_matrix)
+        );
+    m_nbLig += lines.m_nbLig;
+}
+
+
+
+
+
 // Getters
 size_t Matrix::getNbLig() const
 {
@@ -42,7 +83,7 @@ size_t Matrix::getNbCol() const
     return m_nbCol;
 }
 
-vector<double> Matrix::getNthLig(size_t n) const
+vector<double>& Matrix::getNthLig(size_t n)
 {
     if (n >= m_nbLig)
     {
@@ -77,9 +118,16 @@ double Matrix::getElement(size_t lig, size_t col) const
     }
 }
 
+std::vector<std::vector<double> > &Matrix::getMatrix()
+{
+    return m_matrix;
+}
+
+
+
 // Compute
 
-Matrix Matrix::multiply(const Matrix& B, bool transposeA, bool transposeB) const
+Matrix Matrix::multiply( Matrix& B, bool transposeA, bool transposeB)
 {
     // return matrix this x B
     // transpose1 <=> transpose this
@@ -272,7 +320,7 @@ Matrix operator+(Matrix A, const Matrix& B)
     return A;
 }
 
-Matrix operator*(Matrix A, const Matrix& B)
+Matrix operator*(Matrix A,  Matrix& B)
 {
     Matrix C = A.multiply(B);
     return C;
