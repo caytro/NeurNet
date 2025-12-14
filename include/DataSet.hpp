@@ -19,7 +19,9 @@ class DataSet
         size_t getInputDimension() const;
         size_t getOutputDimension() const;
         Matrix& getInput();
+        const Matrix& getInput() const;
         Matrix& getOutput();
+        const Matrix& getOutput() const;
 
     // Other
 

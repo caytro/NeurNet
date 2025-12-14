@@ -13,59 +13,61 @@ using namespace std;
 // Constructors
 
 
-Matrix::Matrix(size_t nbLig, size_t nbCol, double value):m_nbLig(nbLig), m_nbCol(nbCol)
+Matrix::Matrix(size_t nbLines, size_t nbCols, double value):
+    m_nbLines(nbLines), m_nbCols(nbCols)
 {
-    for(size_t i = 0 ; i < m_nbLig ; ++i)
+    for(size_t line = 0 ; line < nbLines ; ++line)
     {
-        vector<double> newLine(nbCol,value);
+        vector<double> newLine(nbCols,value);
         m_matrix.push_back(newLine);
     }
 }
-Matrix::Matrix():m_nbLig(0), m_nbCol(0)
+Matrix::Matrix():m_nbLines(0), m_nbCols(0)
 {
 
 }
 // Setters
 
-void Matrix::setValue(size_t i, size_t j, double value)
+void Matrix::setElement(size_t line, size_t col, double value)
 {
-    if ( i >= m_nbLig || j >= m_nbCol )
+    if ( line >= m_nbLines || col >= m_nbCols )
     {
         throw out_of_range("Erreur index out of range");
     }
-    m_matrix[i][j] = value;
+    m_matrix[line][col] = value;
 }
 
-void Matrix::appendCols(const Matrix &cols)
+void Matrix::appendCols(const Matrix& cols)
 {
-    if(cols.m_nbLig != m_nbLig)
+    if(cols.m_nbLines != m_nbLines)
         throw(invalid_argument("Dimensions invalides"));
 
-    for (size_t i = 0; i < m_nbLig; ++i)
+    for (size_t line = 0; line < m_nbLines; ++line)
     {
-        m_matrix[i].reserve(
-            m_matrix[i].size() + cols.m_matrix[i].size()
+        m_matrix[line].reserve(
+            m_matrix[line].size() + cols.m_matrix[line].size()
             );
         copy(
-            cols.m_matrix[i].begin(),
-            cols.m_matrix[i].end(),
-            back_inserter(m_matrix[i])
+            cols.m_matrix[line].begin(),
+            cols.m_matrix[line].end(),
+            back_inserter(m_matrix[line])
             );
     }
-    m_nbCol += cols.m_nbCol;
+    m_nbCols += cols.m_nbCols;
 }
 
 void Matrix::appendLines(const Matrix &lines)
 {
-    if (lines.m_nbCol != m_nbCol)
+    if (lines.m_nbCols != m_nbCols)
         throw(invalid_argument("Dimensions invalides"));
+
     m_matrix.reserve(m_matrix.size() + lines.m_matrix.size());
     copy(
         lines.m_matrix.begin(),
         lines.m_matrix.end(),
         back_inserter(m_matrix)
         );
-    m_nbLig += lines.m_nbLig;
+    m_nbLines += lines.m_nbLines;
 }
 
 
@@ -73,19 +75,28 @@ void Matrix::appendLines(const Matrix &lines)
 
 
 // Getters
-size_t Matrix::getNbLig() const
+size_t Matrix::getNbLines() const
 {
-    return m_nbLig;
+    return m_nbLines;
 }
 
-size_t Matrix::getNbCol() const
+size_t Matrix::getNbCols() const
 {
-    return m_nbCol;
+    return m_nbCols;
 }
 
 vector<double>& Matrix::getNthLig(size_t n)
 {
-    if (n >= m_nbLig)
+    if (n >= m_nbLines)
+    {
+        throw invalid_argument("Invalid parameter n");
+    }
+    return m_matrix[n];
+}
+
+const vector<double>& Matrix::getNthLig(size_t n) const
+{
+    if (n >= m_nbLines)
     {
         throw invalid_argument("Invalid parameter n");
     }
@@ -94,31 +105,36 @@ vector<double>& Matrix::getNthLig(size_t n)
 
 vector<double> Matrix::getNthCol(size_t n) const
 {
-    if (n >= m_nbCol)
+    if (n >= m_nbCols)
     {
         throw invalid_argument("Invalid parameter n");
     }
     vector<double> col(0);
-    for(vector<double> lig : m_matrix)
+    for(vector<double> line : m_matrix)
     {
-        col.push_back(lig[n]);
+        col.push_back(line[n]);
     }
     return col;
 }
 
-double Matrix::getElement(size_t lig, size_t col) const
+double Matrix::getElement(size_t line, size_t col) const
 {
-    if ((lig < m_nbLig) && (col < m_nbCol))
+    if ((line < m_nbLines) && (col < m_nbCols))
     {
-        return m_matrix[lig][col];
+        return m_matrix[line][col];
     }
     else
     {
-        throw(out_of_range(string(lig + "," + col)));
+        throw(out_of_range(string(line + "," + col)));
     }
 }
 
 std::vector<std::vector<double> > &Matrix::getMatrix()
+{
+    return m_matrix;
+}
+
+const std::vector<std::vector<double> > &Matrix::getMatrix() const
 {
     return m_matrix;
 }
@@ -135,72 +151,72 @@ Matrix Matrix::multiply( Matrix& B, bool transposeA, bool transposeB)
 
     if ( !transposeA && !transposeB )
     {
-        if ( m_nbCol != B.getNbLig() )
+        if ( m_nbCols != B.getNbLines() )
         {
             throw length_error("Erreur Dimensions incompatibles");
         }
-        Matrix product(m_nbLig,B.getNbCol());
-        for(size_t n = 0 ; n < m_nbLig ; ++n)
+        Matrix product(m_nbLines,B.m_nbCols);
+        for(size_t line = 0 ; line < m_nbLines ; ++line)
         {
-            for(size_t m = 0 ; m < B.getNbCol() ; ++m)
+            for(size_t col = 0 ; col < B.m_nbCols ; ++col)
             {
-                vector<double> a = this->getNthLig(n);
-                vector<double> b = B.getNthCol(m);
-                product.m_matrix[n][m] = inner_product(a.begin(), a.end(), b.begin(),0.0);
+                vector<double> a = this->getNthLig(line);
+                vector<double> b = B.getNthCol(col);
+                product.m_matrix[line][col] = inner_product(a.begin(), a.end(), b.begin(),0.0);
             }
         }
         return product;
     }
     else if ( !transposeA && transposeB )
     {
-        if ( m_nbCol != B.getNbCol() )
+        if ( m_nbCols != B.m_nbCols )
         {
             throw length_error("Erreur Dimensions incompatibles");
         }
-        Matrix product(m_nbLig,B.getNbLig());
-        for(size_t n = 0 ; n < m_nbLig ; ++n)
+        Matrix product(m_nbLines,B.m_nbLines);
+        for(size_t line = 0 ; line < m_nbLines ; ++line)
         {
-            for(size_t m = 0 ; m < B.getNbLig() ; ++m)
+            for(size_t col = 0 ; col < B.m_nbLines ; ++col)
             {
-                vector<double> a = this->getNthLig(n);
-                vector<double> b = B.getNthLig(m);
-                product.m_matrix[n][m] = inner_product(a.begin(), a.end(), b.begin(),0.0);
+                vector<double> a = this->getNthLig(line);
+                vector<double> b = B.getNthLig(col);
+                product.m_matrix[line][col] = inner_product(a.begin(), a.end(), b.begin(),0.0);
             }
         }
         return product;
     }
     else if ( transposeA && !transposeB )
     {
-        if ( m_nbLig != B.getNbLig() )
+        if ( m_nbLines != B.m_nbLines )
         {
             throw length_error("Erreur Dimensions incompatibles");
         }
-        Matrix product(m_nbCol,B.getNbCol());
-        for(size_t n = 0 ; n < m_nbCol ; ++n)
+        Matrix product(m_nbCols,B.m_nbCols);
+        for(size_t line = 0 ; line < m_nbCols ; ++line)
         {
-            for(size_t m = 0 ; m < B.getNbCol() ; ++m)
+            for(size_t col = 0 ; col < B.m_nbCols ; ++col)
             {
-                vector<double> a = this->getNthCol(n);
-                vector<double> b = B.getNthCol(m);
-                product.m_matrix[n][m] = inner_product(a.begin(), a.end(), b.begin(),0.0);
+                vector<double> a = this->getNthCol(line);
+                vector<double> b = B.getNthCol(col);
+                product.m_matrix[line][col] = inner_product(a.begin(), a.end(), b.begin(),0.0);
             }
         }
         return product;
     }
     else if ( transposeA && transposeB )
     {
-        if ( m_nbLig != B.getNbCol() )
+        if ( m_nbLines != B.m_nbCols)
         {
             throw length_error("Erreur Dimensions incompatibles");
         }
-        Matrix product(m_nbCol,B.getNbLig());
-        for(size_t n = 0 ; n < m_nbCol ; ++n)
+        Matrix product(m_nbCols,B.m_nbLines);
+        for(size_t line = 0 ; line < m_nbCols ; ++line)
         {
-            for(size_t m = 0 ; m < B.getNbLig() ; ++m)
+            for(size_t col = 0 ; col < B.m_nbLines ; ++col)
             {
-                vector<double> a = this->getNthCol(n);
-                vector<double> b = B.getNthLig(m);
-                product.m_matrix[n][m] = inner_product(a.begin(), a.end(), b.begin(),0.0);
+                vector<double> a = this->getNthCol(line);
+                vector<double> b = B.getNthLig(col);
+                product.m_matrix[line][col] = inner_product(a.begin(), a.end(), b.begin(),0.0);
             }
         }
         return product;
@@ -216,31 +232,27 @@ Matrix Matrix::multiply( Matrix& B, bool transposeA, bool transposeB)
 
 Matrix Matrix::hadamard(const Matrix& B) const
 {
-    if (( m_nbLig == B.getNbLig()) && (m_nbCol == B.getNbCol()))
-    {
-        Matrix product(m_nbLig, m_nbCol);
-        for(size_t i = 0 ; i < m_nbLig ; ++i)
-        {
-            for(size_t j = 0 ; j < m_nbCol ; ++j)
-            {
-                product.setValue(i,j, m_matrix[i][j] * B.getElement(i,j));
-            }
-        }
-        return product;
-    }
-    else
-    {
+    if (( m_nbLines != B.m_nbLines) || (m_nbCols != B.m_nbCols))
         throw(logic_error("Matrix dimensions should be equals"));
+
+    Matrix product(m_nbLines, m_nbCols);
+    for(size_t line = 0 ; line < m_nbLines ; ++line)
+    {
+        for(size_t col = 0 ; col < m_nbCols ; ++col)
+        {
+            product.setElement(line,col, m_matrix[line][col] * B.m_matrix[line][col]);
+        }
     }
+    return product;
 }
 
 void Matrix::multiply(double coef)
 {
-    for(size_t i= 0 ; i < m_nbLig ; ++i)
+    for(size_t line= 0 ; line < m_nbLines ; ++line)
     {
-        for(size_t j = 0 ; j < m_nbCol ; ++j)
+        for(size_t col = 0 ; col < m_nbCols ; ++col)
         {
-            setValue(i,j,m_matrix[i][j] * coef);
+            m_matrix[line][col] *= coef;
         }
     }
 }
@@ -254,24 +266,21 @@ Matrix& Matrix::operator *=(double lambda)
 
 void Matrix::add(const Matrix &B, bool broadcast)
 {
-    if((m_nbLig == B.getNbLig()) && ((!broadcast && (m_nbCol == B.getNbCol())) || (broadcast && B.getNbCol() == 1)))
+    if((m_nbLines != B.m_nbLines) || (!broadcast && (m_nbCols != B.m_nbCols)) || (broadcast && (B.m_nbCols != 1)))
+        throw(logic_error("Error Incoherent dimension and / or broadcast value"));
+
+    for(size_t line = 0 ; line < m_nbLines ; ++line)
     {
-        for(size_t i = 0 ; i < m_nbLig ; ++i)
-        {
-            for(size_t j = 0 ; j < m_nbCol ; ++j){
-                m_matrix[i][j] += (broadcast ? B.getElement(i,0) : B.getElement(i,j));
-            }
+        for(size_t col = 0 ; col < m_nbCols ; ++col){
+            m_matrix[line][col] += (broadcast ? B.getElement(line,0) : B.getElement(line,col));
         }
-    }
-    else
-    {
-        throw(logic_error("Error matrix should have same nbLig. Matrix should have sams nbCol in not broadcast, else B.nbCol() should be equal 1"));
     }
 }
 
+
 Matrix& Matrix::operator+=(const Matrix &B)
 {
-    add(B,(B.m_nbCol == 1)); // If B.m_nbCol == 1 then broadcast
+    add(B,(B.m_nbCols == 1)); // If B.m_nbCol == 1 then broadcast
     return(*this);
 }
 
@@ -302,11 +311,11 @@ void Matrix::apply(nn::Activation act)
 
 void Matrix::display() const
 {
-    for(size_t i = 0 ; i < m_nbLig ; ++i)
+    for(size_t line = 0 ; line < m_nbLines ; ++line)
     {
-        for (size_t j = 0 ; j < m_nbCol ; ++j)
+        for (size_t col = 0 ; col < m_nbCols ; ++col)
         {
-            cout << m_matrix[i][j] << " ; ";
+            cout << m_matrix[line][col] << ((col != (m_nbCols - 1)) ? " : " : "") ;
         }
         cout << endl;
     }

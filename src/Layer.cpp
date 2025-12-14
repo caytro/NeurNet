@@ -14,14 +14,15 @@ using namespace std;
   inputDataDimension = dimension des échantillons
 */
 
-Layer::Layer(size_t nbNeurones, size_t inputDataDimension, size_t inputDataSetSize): m_nbNeurones(nbNeurones)
+Layer::Layer(size_t nbNeurones, size_t nbFeatures, nn::Activation act):
+    m_nbNeurones(nbNeurones),
+    m_nbFeatures(nbFeatures),
+    m_act(act)
 {
-    m_W = Matrix(nbNeurones, inputDataDimension,1.0);
-    m_Z = Matrix(nbNeurones, inputDataSetSize, 0.0);
-    m_A = Matrix(nbNeurones, inputDataSetSize, 0.0);
+    m_W = Matrix(nbNeurones, nbFeatures,1.0);
     m_B = Matrix(nbNeurones, 1, 0.0);
-    m_act = nn::Activation::Logistic;
-
+    m_Z = Matrix(nbNeurones, 0, 0.0);
+    m_A = Matrix(nbNeurones, 0, 0.0);
 }
 
 
@@ -37,7 +38,17 @@ Matrix &Layer::getW()
     return m_W;
 }
 
+const Matrix &Layer::getW() const
+{
+    return m_W;
+}
+
 Matrix &Layer::getB()
+{
+    return m_B;
+}
+
+const Matrix &Layer::getB() const
 {
     return m_B;
 }
@@ -47,10 +58,23 @@ Matrix &Layer::getZ()
     return m_Z;
 }
 
+const Matrix &Layer::getZ() const
+{
+    return m_Z;
+}
+
 Matrix &Layer::getA()
 {
     return m_A;
 }
+
+const Matrix &Layer::getA() const
+{
+    return m_A;
+}
+
+
+// Compute
 
 void Layer::computeZ( Matrix& input)
 {
@@ -63,7 +87,4 @@ void Layer::computeA( Matrix& input)
     m_A = m_Z;
     m_A.apply(nn::Activation::Logistic);
 }
-
-// Compute
-
 

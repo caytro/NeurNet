@@ -17,14 +17,14 @@ int main()
     DataSet dataSet(2,1);
     vector<double> X={1.0,2.0};
     Matrix A(3,4);
-    for(size_t i = 0; i < A.getNbLig() ; ++i )
-        for(size_t j = 0 ; j < A.getNbCol() ; j++ )
-            A.setValue(i,j,double((j + 1) + ( i * A.getNbCol())));
+    for(size_t i = 0; i < A.getNbLines() ; ++i )
+        for(size_t j = 0 ; j < A.getNbCols() ; j++ )
+            A.setElement(i,j,double((j + 1) + ( i * A.getNbCols())));
 
     Matrix B(3,4);
-    for(size_t i = 0; i < B.getNbLig() ; ++i )
-        for(size_t j = 0 ; j < B.getNbCol() ; j++ )
-            B.setValue(i,j,double(((j + 1) + ( i * B.getNbCol())) % 2));
+    for(size_t i = 0; i < B.getNbLines() ; ++i )
+        for(size_t j = 0 ; j < B.getNbCols() ; j++ )
+            B.setElement(i,j,double(((j + 1) + ( i * B.getNbCols())) % 2));
 
     cout << "A=" << endl;
     A.display();
@@ -43,14 +43,14 @@ int main()
     cout << endl << "Produit" << endl;
 
     A =  Matrix(3,4);
-    for(size_t i = 0; i < A.getNbLig() ; ++i )
-        for(size_t j = 0 ; j < A.getNbCol() ; j++ )
-            A.setValue(i,j,double((j + 1) + ( i * A.getNbCol())));
+    for(size_t i = 0; i < A.getNbLines() ; ++i )
+        for(size_t j = 0 ; j < A.getNbCols() ; j++ )
+            A.setElement(i,j,double((j + 1) + ( i * A.getNbCols())));
 
     B = Matrix(4,3);
-    for(size_t i = 0; i < B.getNbLig() ; ++i )
-        for(size_t j = 0 ; j < B.getNbCol() ; j++ )
-            B.setValue(i,j,double(((j + 1) + ( i * B.getNbCol())) % 2));
+    for(size_t i = 0; i < B.getNbLines() ; ++i )
+        for(size_t j = 0 ; j < B.getNbCols() ; j++ )
+            B.setElement(i,j,double(((j + 1) + ( i * B.getNbCols())) % 2));
 
 
     cout << endl << "A=" << endl;

@@ -15,9 +15,10 @@ MultiLayerNetwork::MultiLayerNetwork(vector<size_t> nbNeuronesPerLayer, size_t i
     m_act(act)
 
 {
-    for(size_t i = 0 ; i < nbNeuronesPerLayer.size() ; ++i)
+    for(size_t numLayer = 0 ; numLayer < nbNeuronesPerLayer.size() ; ++numLayer)
     {
-        Layer newLayer(nbNeuronesPerLayer[i],(i==0 ? inputDimension : nbNeuronesPerLayer[i-1]),1);
+        Layer newLayer(nbNeuronesPerLayer[numLayer],
+                       (numLayer==0 ? m_inputDimension : nbNeuronesPerLayer[numLayer-1]), act);
         m_layers.push_back(newLayer);
     }
 }

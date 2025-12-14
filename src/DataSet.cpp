@@ -39,7 +39,7 @@ void DataSet::setOutputDimension(size_t outputDimension)
 
 void DataSet::addSample(const Matrix& sampleInput, const Matrix& sampleOutput)
 {
-    if((sampleInput.getNbLig() != m_inputDimension) || (sampleOutput.getNbLig() != m_outputDimension))
+    if((sampleInput.getNbLines() != m_inputDimension) || (sampleOutput.getNbLines() != m_outputDimension))
         throw("Error : Sample and dataSet should have same dimension");
 
     m_input.appendCols(sampleInput);
@@ -64,7 +64,17 @@ Matrix &DataSet::getInput()
     return m_input;
 }
 
+const Matrix &DataSet::getInput() const
+{
+    return m_input;
+}
+
 Matrix &DataSet::getOutput()
+{
+    return m_output;
+}
+
+const Matrix &DataSet::getOutput() const
 {
     return m_output;
 }
@@ -108,7 +118,7 @@ Matrix &DataSet::getOutput()
 
 void DataSet::computeFeatureMinMax()
 {
-    if (m_input.getNbCol() == 0) return;
+    if (m_input.getNbCols() == 0) return;
 
     m_mins.assign(m_inputDimension,  numeric_limits<double>::infinity());
     m_maxs.assign(m_inputDimension, -numeric_limits<double>::infinity());

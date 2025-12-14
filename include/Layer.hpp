@@ -10,8 +10,7 @@ public:
 
 // Constructors
 
-    Layer(size_t nbNeurones, size_t inputDataDimension,
-          size_t inputDataSetSize);
+    Layer(size_t nbNeurones, size_t nbFeatures, nn::Activation act);
 
 // Setters
 
@@ -22,9 +21,13 @@ public:
 
     size_t getNbNeurones() const;
     Matrix& getW() ;
+    const Matrix& getW() const;
     Matrix& getB() ;
+    const Matrix& getB() const;
     Matrix& getZ() ;
+    const Matrix& getZ() const;
     Matrix& getA() ;
+    const Matrix& getA() const;
 
 
 
@@ -37,9 +40,11 @@ public:
 private:
 
     size_t m_nbNeurones;
+    size_t m_nbFeatures;
     Matrix m_W;
+    Matrix m_B; // Utile ? Rajouter une entrée à 1 dans le vecteur Input ?
     Matrix m_Z;
     Matrix m_A;
-    Matrix m_B; // Utile ? Rajouter une entrée à 1 dans le vecteur Input ?
+
     nn::Activation m_act;
 };
